@@ -29,12 +29,12 @@ Pour des raisons pratiques, je n’aborde nullement l’ajout de matériel comme
 
 Pour cette version du guide, je me suis basé sur la dernière ISO officielle, celle qui utilise les scripts d’installation. En avril 2020, c’est la 2020.04.01.
 
-Merci à Ewolnux, Xarkam, Frédéric Sierra, Ludovic Riand, Vincent Manillier, Thomas Pawlowski, Igor Milhit, André Ray, Nicolas, Charles Monzat, SuperMario S, Angristan, Simon B, r33int, Mozzi, Kevin Dubrulle, Christophe Leloup, Nornort, Quentin Bihet et Popop pour leurs conseils et remarques. Et merci surtout à Frédéric Béziès pour avoir rédigé les premières versions de ce document, proposé sous licence [CC-BY-SA 4.0.](http://creativecommons.org/licenses/by-sa/4.0)
+Merci à Ewolnux, Xarkam, Frédéric Sierra, Ludovic Riand, Vincent Manillier, Thomas Pawlowski, Igor Milhit, André Ray, Nicolas, Charles Monzat, SuperMario S, Angristan, Simon B, r33int, Mozzi, Kevin Dubrulle, Christophe Leloup, Nornort et Quentin Bihet pour leurs conseils et remarques. Et merci surtout à Frédéric Béziès pour avoir rédigé les premières versions de ce document, proposé sous licence [CC-BY-SA 4.0.](http://creativecommons.org/licenses/by-sa/4.0)
 
 I) Installons notre base
 ------------------------
 
-Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2020.07.01-x86\_64.iso, mise en ligne début juillet 2020.
+Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2020.08.01-x86\_64.iso, mise en ligne début août 2020.
 
 La machine virtuelle est une machine virtuelle à laquelle j’ai rajouté un disque virtuel de 50 Go. Des points spécifiques concernant l’utilisation dans VirtualBox et VMWare sont indiqués. Par défaut, le noyau proposé par Archlinux est un noyau « court terme ». Si vous voulez un noyau LTS, je vous expliquerai comment faire.
 
@@ -167,7 +167,7 @@ On peut passer à l’installation de la base.
 
 Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. mais avant toute chose, choisissons le miroir le plus rapide.
 
-**Note :** si vous utilisez une connexion wifi, je vous conseille de voir cette page du wiki anglophone d'archlinux : <https://wiki.archlinux.org/index.php/Netctl> TODO : à revérifier
+**Note :** si vous utilisez une connexion wifi, je vous conseille de voir cette page du wiki anglophone d'archlinux : <https://wiki.archlinux.org/index.php/Netctl>. La connexion au WiFi étant plus difficile sur les dernières images iso d'ArchLinux, passer par un LiveCD graphique basé sur ArchLinux tel que SystemRescueCD ou EndeavourOS peut être une solution. Merci à **Popop** pour la remarque. **TODO : iwctl ?**
 
 **Note 2 :** si vous êtes derrière un serveur proxy, il faut rajouter les lignes suivantes avec les valeurs qui vont bien. Merci à Nicolas pour l'info :)
 
@@ -175,7 +175,30 @@ Après avoir procédé au partitionnement et à l’attribution des partitions, 
 export http_proxy=http://leproxy:leport/
 ```
 
+**Note 3**, suggestion de **Dolorem :** si vous souhaitez utiliser SSH, voici la procédure à suivre :  
+On définit d'abord un mit de passe à root :
+
+```
+passwd
+```
+
+Pour obtenir l'ip locale :
+
+```
+ip a
+```
+
+On lance le service ssh :
+
+```
+systemctl start sshd
+```
+
+Vous pouvez désormais vous connecter en ssh à votre machine.
+
+
 Avec l'outil Reflector, nous allons générer une liste des miroirs de téléchargement des paquets, en fonction de votre localisation. Je vais utiliser personnellement ces paramètres :
+
 ```
 reflector -c France -c "United Kingdom" -p https -a 12 --sort rate --save /etc/pacman.d/mirrorlist
 ```
@@ -279,9 +302,9 @@ mkinitcpio -p linux (ou **linux-lts** si vous voulez le noyau lts.)
 
 **Note** : si vous avez une « hurlante » contenant « /run/lvm/lvmetad.socket: connect failed » ou quelque chose d’approchant, ce n’est pas un bug. C’est une alerte sans conséquence. Cf <https://wiki.archlinux.org/index.php/GRUB#Boot_freezes>
 
-![Illustration 7 : Génération du noyau linux 5.7.7 début juillet 2020](pictures/007.png)
+![Illustration 7 : Génération du noyau linux 5.7.12 début juillet 2020](pictures/007.png)
 
-*Illustration 7 : Génération du noyau linux 5.7.7 début juillet 2020*
+*Illustration 7 : Génération du noyau linux 5.7.12 début juillet 2020*	
 
 
 Au tour du chargeur de démarrage. J’utilise Grub2 qui s’occupe de tout et récupère les paquets qui vont bien. Le paquet os-prober est indispensable pour un double démarrage.
@@ -295,7 +318,7 @@ grub-install --no-floppy --recheck /dev/sda
 
 **2) Pour une installation en mode UEFI :**
 
-La première ligne permet de vérifier un point de montage et de l’activer au besoin. La deuxième installe Grub. Merci à Kevin Dubrulle pour l’ajout.
+La deuxième ligne permet de vérifier un point de montage et de l’activer au besoin. La troisième installe Grub. Merci à Kevin Dubrulle pour l’ajout.
 
 ```
 pacman -Syy grub os-prober efibootmgr
@@ -348,8 +371,18 @@ Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des l
 #[multilib]
 #Include = /etc/pacman.d/mirrorlist
 ```
-On peut maintenant quitter tout, démonter proprement les partitions et redémarrer.
 
+**NOTE 4** (d'après une suggestion de **Lomig**) : Toujours dans le pacman.conf, vous pouvez décommenter ou rajouter ces options dans la partie "#Misc options" pour rendre Pacman plus sympathique :
+
+```
+Color
+TotalDownload
+CheckSpace
+VerbosePkgLists
+ILoveCandy
+```
+
+On peut maintenant quitter tout, démonter proprement les partitions et redémarrer.
 C’est un peu plus délicat qu’auparavant. Au moins, on voit les étapes à suivre.
 
 ```
@@ -569,6 +602,7 @@ Les valeurs étant à adapter en fonction de la locale et du clavier, bien enten
 Étant donné que systemd est utilisé, voici la liste des services à activer (avec une explication rapide), **qui sera la même pour chacun des environnements** proposés dans les « addenda » :
 
 ```
+sudo -i
 systemctl enable syslog-ng@default → *gestion des fichiers d’enregistrement d’activité*
 systemctl enable cronie → *pour les tâches récurrentes*
 systemctl enable avahi-{daemon,dnsconfd} → *dépendances de Cups*
@@ -674,14 +708,14 @@ sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
 Pour installer Xfce, il faut entrer :
 
 ```
-sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator epdfview gucharmap ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} libcanberra-{pulse,gstreamer} system-config-printer **→ (pour installer le support des imprimantes)**
+sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator evince gucharmap ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
 ```
 
 Quodlibet ? Pour l’audio. Pour les périphériques amovibles, gvfs est obligatoire. Claws-mail ou Mozilla Thunderbird (avec le paquet thunderbird-i18n-fr) pour le courrier. Lightdm étant pris, car plus rapide à installer. Le paquet python2-pyinotify est nécessaire pour activer le greffon de mise à jour automatique de la musicothèque sous Quodlibet. Xfce intégrant Parole, VLC n'est plus nécessaire.
 
-ePDFView ? Pour les fichiers en pdf. On peut aussi remplacer xarchiver par file-roller. Quant à ffmpegthumbnailer, c’est utile si vous désirez avoir un aperçu des vidéos stockées sur votre ordinateur. Enfin, gnome-characters sert à disposer d'une table de caractères. Xfce intégrant désormais un économiseur d'écran, xscreensaver n'est plus nécessaire.
+Evince ? Pour les fichiers en pdf. On peut aussi remplacer xarchiver par file-roller. Quant à ffmpegthumbnailer, c’est utile si vous désirez avoir un aperçu des vidéos stockées sur votre ordinateur. Enfin, gnome-characters sert à disposer d'une table de caractères. Xfce intégrant désormais un économiseur d'écran, xscreensaver n'est plus nécessaire.
 
-Si vous utilisez NetworkManager, vous pouvez rajouter l’applet pour gérer et surveiller votre réseau avec le paquet « network-manager-applet ». Si vous voulez personnaliser votre lightdm :
+Si vous voulez personnaliser votre lightdm :
 
 ```
 sudo pacman -S lightdm-gtk-greeter-settings
@@ -715,10 +749,10 @@ Si vous voulez la totalité des greffons gvfs (merci à SuperMarioS pour la lign
 sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
 ```
 
-L’installation ressemble à celle de Xfce, donc pour les explications des paquets, cf l’addenda consacré à Xfce. VLC est rajouté pour la vidéo. Idem pour l’utilisation de NetworkManager (network-manager-applet) si vous le voulez. Il ne faut pas oublier de rajouter un outil de gravure, comme Brasero si nécessaire. Pour le navigateur, Mozilla Firefox ou Chromium. C’est selon les goûts !
+L’installation ressemble à celle de Xfce, donc pour les explications des paquets, cf l’addenda consacré à Xfce. VLC est rajouté pour la vidéo. Il ne faut pas oublier de rajouter un outil de gravure, comme Brasero si nécessaire. Pour le navigateur, Mozilla Firefox ou Chromium. C’est selon les goûts !
 
 ```
-sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme gucharmap vlc quodlibet python-pyinotify accountsservice claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer **→ (pour installer le support des imprimantes)**
+sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme gucharmap vlc quodlibet python-pyinotify accountsservice claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
 ```
 
 Si vous voulez personnaliser votre lightdm :
@@ -749,7 +783,7 @@ sudo systemctl enable lightdm
 
 L’installation est assez courte. 
 
-Les meta-paquets gnome et gnome-extra ne sont pas indispensables, mais ils contiennent une partie non négligeable de la logithèque. Il faut juste penser à enlever nautilus, gnome-shell, gnome-session, gnome-control-center, gnome-settings-daemon, gnome-tweaks et mutter pour éviter les doublons avec les composants de gnome-shell.
+Les meta-paquets gnome et gnome-extra ne sont pas indispensables, mais ils contiennent une partie non négligeable de la logithèque. Il faut juste penser à enlever nautilus, gnome-shell, gnome-session, gnome-control-center, gnome-settings-daemon, gnome-tweaks, gdm et mutter pour éviter les doublons avec les composants de Cinnamon.
 
 ```
 sudo pacman -S cinnamon cinnamon-translations gnome gnome-extra gnome-software-packagekit-plugin lightdm-gtk-greeter shotwell rhythmbox system-config-printer → (pour installer le support des imprimantes)
@@ -796,7 +830,7 @@ Comme pour l’installation de Xfce ou encore de Mate Desktop, j’ai pris quelq
 Commençons par LXDE. Son installation est assez simple. Xterm est installé, car il est indispensable pour faire fonctionner l’appliquette de gestion du niveau du son. Htop
 
 ```
-sudo pacman -S lxde-gtk3 xarchiver mousepad claws-mail xscreensaver vlc epdfview galculator flameshot gucharmap xterm system-config-printer → (pour installer le support des imprimantes)
+sudo pacman -S lxde-gtk3 xarchiver mousepad claws-mail xscreensaver vlc evince galculator flameshot gucharmap xterm system-config-printer → (pour installer le support des imprimantes)
 ```
 
 Pour lancer LXDE, il faut entrer dans un premier temps :
@@ -834,9 +868,9 @@ sudo systemctl enable sddm
 
 *Illustration 18: LXDE dans VirtualBox, avec le thème Adwaita*
 
-![Illustration 19: LXQt 0.15 dans Virtualbox, avec le thème Breeze](pictures/019.png)
+![Illustration 19: LXQt 0.15 dans VMWare, avec le thème Breeze](pictures/019.png)
 
-*Illustration 19: LXQt 0.15 dans Virtualbox, avec le thème Breeze*
+*Illustration 19: LXQt 0.15 dans VMWare, avec le thème Breeze*
 
 Voila, le guide est maintenant fini. Cependant, je n’ai pas abordé l’installation d’un pare-feu. C’est quelque chose de plus technique.
 
