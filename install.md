@@ -42,18 +42,54 @@ Dans cette partie, certaines sections seront dédoublées à cause des différen
 
 Commençons par une installation en mode Bios, du point de vue du partitionnement et de l’attribution des partitions. Si vous utilisez une machine réelle ou virtuelle avec l’UEFI, des instructions spécifiques sont détaillées par la suite.
 
+La première chose à faire, c’est d’avoir le clavier français :
+
+```
+loadkeys fr
+```
+
+On s'occupe de vérifier que la connexion Internet est fonctionnelle :
+```
+ping google.fr
+```
+
+**Note :** si vous utilisez une connexion wifi, je vous conseille de voir cette page du wiki anglophone d'archlinux : <https://wiki.archlinux.org/index.php/Netctl>. La connexion au WiFi étant plus difficile sur les dernières images iso d'ArchLinux, passer par un LiveCD graphique basé sur ArchLinux tel que SystemRescueCD ou EndeavourOS peut être une solution. Merci à **Popop** pour la remarque. 
+
+**Note 2 :** si vous êtes derrière un serveur proxy, il faut rajouter les lignes suivantes avec les valeurs qui vont bien. Merci à Nicolas pour l'info :)
+
+```
+export http_proxy=http://leproxy:leport/
+```
+
+**Note 3**, suggestion de **Dolorem :** si vous souhaitez utiliser SSH, voici la procédure à suivre :  
+On définit d'abord un mit de passe à root :
+
+```
+passwd
+```
+
+Pour obtenir l'ip locale :
+
+```
+ip a
+```
+
+On lance le service ssh :
+
+```
+systemctl start sshd
+```
+
+Vous pouvez désormais vous connecter en ssh à votre machine.
+
+Si tout est fonctionnel, nous pouvons passer au partitionnement.
+
 #### Partitionnement et attribution des partitions en mode Bios :
 
 ![Illustration 1: écran de démarrage en mode Bios, uniquement en 64 bits (depuis mars 2017)](pictures/001.png)
 
 *Illustration 1: écran de démarrage en mode Bios, uniquement en 64 bits (depuis mars 2017)*
 
-
-La première chose à faire, c’est d’avoir le clavier français :
-
-```
-loadkeys fr
-```
 
 Pour le partitionnement, si vous avez peur de faire des bêtises, il est plus prudent de passer par un LiveCD comme gParted disponible à l’adresse suivante : <http://gparted.org/>
 
@@ -106,12 +142,6 @@ mount /dev/sda4 /mnt/home
 On peut passer ensuite à l’installation de la base.
 
 #### Partitionnement et attribution des partitions en mode UEFI :
-
-La première chose à faire, c’est d’avoir le clavier français :
-
-```
-loadkeys fr
-```
 
 Voici donc l’écran qui nous permet de démarrer en mode UEFI :
 
@@ -166,35 +196,6 @@ On peut passer à l’installation de la base.
 #### Installation de la base de notre Archlinux :
 
 Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. mais avant toute chose, choisissons le miroir le plus rapide.
-
-**Note :** si vous utilisez une connexion wifi, je vous conseille de voir cette page du wiki anglophone d'archlinux : <https://wiki.archlinux.org/index.php/Netctl>. La connexion au WiFi étant plus difficile sur les dernières images iso d'ArchLinux, passer par un LiveCD graphique basé sur ArchLinux tel que SystemRescueCD ou EndeavourOS peut être une solution. Merci à **Popop** pour la remarque. **TODO : iwctl ?**
-
-**Note 2 :** si vous êtes derrière un serveur proxy, il faut rajouter les lignes suivantes avec les valeurs qui vont bien. Merci à Nicolas pour l'info :)
-
-```
-export http_proxy=http://leproxy:leport/
-```
-
-**Note 3**, suggestion de **Dolorem :** si vous souhaitez utiliser SSH, voici la procédure à suivre :  
-On définit d'abord un mit de passe à root :
-
-```
-passwd
-```
-
-Pour obtenir l'ip locale :
-
-```
-ip a
-```
-
-On lance le service ssh :
-
-```
-systemctl start sshd
-```
-
-Vous pouvez désormais vous connecter en ssh à votre machine.
 
 
 Avec l'outil Reflector, nous allons générer une liste des miroirs de téléchargement des paquets, en fonction de votre localisation. Je vais utiliser personnellement ces paramètres :
@@ -302,9 +303,9 @@ mkinitcpio -p linux (ou **linux-lts** si vous voulez le noyau lts.)
 
 **Note** : si vous avez une « hurlante » contenant « /run/lvm/lvmetad.socket: connect failed » ou quelque chose d’approchant, ce n’est pas un bug. C’est une alerte sans conséquence. Cf <https://wiki.archlinux.org/index.php/GRUB#Boot_freezes>
 
-![Illustration 7 : Génération du noyau linux 5.7.12 début juillet 2020](pictures/007.png)
+![Illustration 7 : Génération du noyau linux 5.9.1 mi-octobre 2020](pictures/007.png)
 
-*Illustration 7 : Génération du noyau linux 5.7.12 début juillet 2020*	
+*Illustration 7 : Génération du noyau linux 5.9.1 mi-octobre 2020*	
 
 
 Au tour du chargeur de démarrage. J’utilise Grub2 qui s’occupe de tout et récupère les paquets qui vont bien. Le paquet os-prober est indispensable pour un double démarrage.
