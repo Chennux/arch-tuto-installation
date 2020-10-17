@@ -1,14 +1,14 @@
 Sommaire
 ========
 
-   * [Petit guide d’installation d’Archlinux avec Gnome 3.36.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-336x--plasma-519x--xfce--mate-desktop--cinnamon--lxde--lxqt)
+   * [Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-338x--plasma-519x--xfce--mate-desktop--cinnamon--lxde--lxqt)
       * [I) Installons notre base](#i-installons-notre-base)<br>
             * [Partitionnement et attribution des partitions en mode Bios :](#partitionnement-et-attribution-des-partitions-en-mode-bios-)<br>
             * [Partitionnement et attribution des partitions en mode UEFI :](#partitionnement-et-attribution-des-partitions-en-mode-uefi-)<br>
             * [Installation de la base de notre Archlinux :](#installation-de-la-base-de-notre-archlinux-)
       * [II) Commençons l'installation de l’environnement graphique !](#ii-commen%C3%A7ons-linstallation-de-lenvironnement-graphique-)
       * [III) Installons l'environnement de bureau.](#iii-installons-lenvironnement-de-bureau)<br>
-            * [a) Installons GNOME 3.36](#a-installons-gnome-336)<br>
+            * [a) Installons GNOME 3.38](#a-installons-gnome-338)<br>
             * [b) Installons KDE Plasma 5.19](#b-installons-kde-plasma-519)<br>
             * [c) Installons Xfce](#c-installons-xfce)<br>
             * [d) Installons Mate-Desktop](#d-installons-mate-desktop)<br>
@@ -18,10 +18,10 @@ Sommaire
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 
-Petit guide d’installation d’Archlinux avec Gnome 3.36.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
+Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
 =======================================================================================================================
 
-Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.36 et suivant, Plasma 5.19.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
+Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.19.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
 
 Pour des raisons pratiques, je n’aborde nullement l’ajout de matériel comme les imprimantes, les scanners, ou encore les webcams. Je vous renvoie aux wikis anglophone <https://wiki.archlinux.org/> et francophone <http://wiki.archlinux.fr/Accueil> pour ce genre de manipulations.
 
@@ -212,7 +212,7 @@ Autrement dit, nous allons utiliser uniquement des miroirs français et britanni
 On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
-pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages} e2fsprogs sysfsutils vi
+pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages} e2fsprogs sysfsutils
 pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfat-utils bash-completion (sur une seule ligne !)
 ```
 Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
@@ -376,6 +376,7 @@ Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des l
 **NOTE 4** (d'après une suggestion de **Lomig**) : Toujours dans le pacman.conf, vous pouvez décommenter ou rajouter ces options dans la partie "#Misc options" pour rendre Pacman plus sympathique :
 
 ```
+UseSyslog
 Color
 TotalDownload
 CheckSpace
@@ -455,7 +456,7 @@ Il faut ensuite choisir le pilote pour le circuit vidéo. Voici les principaux p
 
 Pour Nvidia, c’est un casse-tête au niveau des pilotes propriétaires. Le plus simple est de se référer au wiki d'Archlinux : <https://wiki.archlinux.org/index.php/NVIDIA>. Et si vous avez la technologie Optimus : <https://wiki.archlinux.org/index.php/NVIDIA_Optimus>
 
-**Note 2** : Il est recommandé dans la plupart des cas de ne'installer aucun pilote pour les cartes graphiques Intel : cf. <https://wiki.archlinux.org/index.php/Intel_graphics#Installation>
+**Note 2** : Il est recommandé dans la plupart des cas de n'installer aucun pilote pour les cartes graphiques Intel : cf. <https://wiki.archlinux.org/index.php/Intel_graphics#Installation>
 
  
 | Circuits graphiques | Pilotes libres         | Pilotes non libres (si existant)                     |
@@ -475,12 +476,6 @@ Ce qui donne :
 pacman -S xf86-video-vmware virtualbox-guest-utils
 ```
 
-![Illustration 9: Choix du paquet à installer concernant virtualbox-guest-utils](pictures/009.png)
-
-*Illustration 9: Choix du paquet à installer concernant virtualbox-guest-utils*
-
-Le premier nécessite le paquet linux-headers (ou linux-lts-headers), le deuxième propose les modules noyaux déjà précompilés. **On choisit donc la deuxième option.**
-
 **Note 3 :** si vous avez décidé d’installer le noyau lts, il faut installer les paquets linux-lts-headers et virtualbox-guest-dkms. Il n’y a plus de modules précompilés pour le noyau linux-lts
 
 
@@ -489,7 +484,7 @@ La prise en charge des modules noyau se fait avec la commande systemctl suivante
 ```
 systemctl enable vboxservice
 ```
-**Note 4** : Si comme moi vous avez des soucis pour l'adapation de la résolution d'affichage sous VirtualBox, et ce, même avec le pilote VMWare installé, désinstallez *virtualbox-guest-utils* et réinstallez les additions depuis l'iso (les paquets *dkms* et *linux-(lts-)-headers* doivent être installés). Éventuellement exécutez la commande ```VBoxClient --vmsvga```.
+**Note 4** : Si comme moi vous avez des soucis pour l'adapation de la résolution d'affichage sous VirtualBox, et ce, même avec le pilote VMWare installé, changez le contrôleur graphique de la machine virtuelle pour "VBoxSVGA".
 
 Dans le cas où vous utilisez VMWare, vous devez installer aussi les VMWare Tools :
 ```
@@ -543,7 +538,7 @@ pacman -S libreoffice-fresh-fr hunspell-fr
 On rajoute ensuite Mozilla Firefox en français avec l'indispensable bloqueur de publicités :
 
 ```
-pacman -S firefox-i18n-fr firefox-ublock-origin
+pacman -S firefox-{i18n-fr,ublock-origin}
 ```
 
 Vous préférez Chromium ?
@@ -561,12 +556,17 @@ passwd nom-de-l’utilisateur
 
 Avant de finir, on va configurer sudo en utilisant visudo qui modifie /etc/sudoers. En effet, il nous suffit de modifier une ligne pour que l’on puisse accéder en tant qu’utilisateur classique aux droits complets sur la machine de manière temporaire.
 
+Pensez à préciser l'éditeur que vous voulez utiliser en exécutant la commande. Par exemple :
+```
+EDITOR="nano" visudo
+```
+
 Il faut aller, en utilisant la flèche du bas jusqu’à la ligne :
 
 ```
 #Uncomment to allow members of group wheel to execute any command
 ```
-Et enlever le \# sur la ligne qui suit. La séquence de touches « Échap : w et q » permet de converser la modification dans vi. Une autre possibilité étant « Échap : x » proposée par Quentin Bihet.
+Et enlever le \# sur la ligne qui suit.
 
 **Petit bonus : installer Trizen ou Yay pour compléter Pacman.**
 
@@ -616,14 +616,15 @@ III) Installons l'environnement de bureau
 
 **Note :** à partir de maintenant, nous sommes connectés en tant qu’utilisateur classique.
 
-#### a) Installons GNOME 3.36
+#### a) Installons GNOME 3.38
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme trizen ou yay par exemple.
 
 On commence par installer les paquets de GNOME. Le paquet telepathy permet d’ajouter le maximum de support pour les comptes utilisateurs en ligne. Gnome Logiciels (alias gnome-software) est désormais installé avec le méta-paquet gnome. Le paquet gnome-software-packagekit-plugin permet d'installer des logiciels provenant des dépôts d'Arch Linux depuis Gnome Logiciels.
+unoconv sert à disposer des aperçus des documents dans GNOME Documents.
 
 ```
-sudo pacman -S gnome gnome-extra gnome-software-packagekit-plugin system-config-printer telepathy shotwell rhythmbox
+sudo pacman -S gnome gnome-extra gnome-software-packagekit-plugin system-config-printer telepathy shotwell rhythmbox unoconv
 ```
 
 Si vous voulez ajouter le support du MTP (appareils sous Android par exemple), installez en plus le paquet mtpfs.
@@ -639,9 +640,9 @@ Si tout se passe bien : on l'active au démarrage.
 sudo systemctl enable gdm.service
 ```
 
-![Illustration 10: GDM 3.36 avec les sessions Wayland et Gnome sur Xorg](pictures/010.png)
+![Illustration 10: GDM 3.38 avec les sessions Wayland et Gnome sur Xorg](pictures/010.png)
 
-*Illustration 10: GDM 3.36 avec les sessions Wayland et Gnome sur Xorg*
+*Illustration 10: GDM 3.38 avec les sessions Wayland et Gnome sur Xorg*
 
 
 Il faut penser à vérifier que le clavier est correctement configuré. Ce qui se fait dans menu système unifié, paramètres.
