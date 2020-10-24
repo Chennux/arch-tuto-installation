@@ -1,7 +1,7 @@
 Sommaire
 ========
 
-   * [Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-338x--plasma-519x--xfce--mate-desktop--cinnamon--lxde--lxqt)
+   * [Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.20.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-338x--plasma-510x--xfce--mate-desktop--cinnamon--lxde--lxqt)
       * [I) Installons notre base](#i-installons-notre-base)<br>
             * [Partitionnement et attribution des partitions en mode Bios :](#partitionnement-et-attribution-des-partitions-en-mode-bios-)<br>
             * [Partitionnement et attribution des partitions en mode UEFI :](#partitionnement-et-attribution-des-partitions-en-mode-uefi-)<br>
@@ -9,7 +9,7 @@ Sommaire
       * [II) Commençons l'installation de l’environnement graphique !](#ii-commen%C3%A7ons-linstallation-de-lenvironnement-graphique-)
       * [III) Installons l'environnement de bureau.](#iii-installons-lenvironnement-de-bureau)<br>
             * [a) Installons GNOME 3.38](#a-installons-gnome-338)<br>
-            * [b) Installons KDE Plasma 5.19](#b-installons-kde-plasma-519)<br>
+            * [b) Installons KDE Plasma 5.19](#b-installons-kde-plasma-520)<br>
             * [c) Installons Xfce](#c-installons-xfce)<br>
             * [d) Installons Mate-Desktop](#d-installons-mate-desktop)<br>
             * [e) Installons Cinnamon](#e-installons-cinnamon)<br>
@@ -18,10 +18,10 @@ Sommaire
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 
-Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.19.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
+Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.20.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
 =======================================================================================================================
 
-Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.19.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
+Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.20.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
 
 Pour des raisons pratiques, je n’aborde nullement l’ajout de matériel comme les imprimantes, les scanners, ou encore les webcams. Je vous renvoie aux wikis anglophone <https://wiki.archlinux.org/> et francophone <http://wiki.archlinux.fr/Accueil> pour ce genre de manipulations.
 
@@ -484,7 +484,7 @@ La prise en charge des modules noyau se fait avec la commande systemctl suivante
 ```
 systemctl enable vboxservice
 ```
-**Note 4** : Si comme moi vous avez des soucis pour l'adapation de la résolution d'affichage sous VirtualBox, et ce, même avec le pilote VMWare installé, changez le contrôleur graphique de la machine virtuelle pour "VBoxSVGA".
+**Note 4** : Si comme moi vous avez des soucis pour l'adapation de la résolution d'affichage sous VirtualBox, et ce, même avec le pilote VMWare installé, désinstallez *virtualbox-guest-utils* et réinstallez les additions depuis l'iso (les paquets *dkms* et *linux-(lts-)-headers* doivent être installés). Éventuellement exécutez la commande ```VBoxClient --vmsvga```.
 
 Dans le cas où vous utilisez VMWare, vous devez installer aussi les VMWare Tools :
 ```
@@ -496,7 +496,7 @@ De la même façon, vous devez activer les services adéquats :
 systemctl enable {vmtoolsd,vmware-vmblock-fuse}.service
 ```
 
-**Note 5 :** si vous installez un jour VirtualBox sur une machine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
+**Note 5 :** si vous installez un jour VirtualBox sur une ma-extrachine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
 
 **Note 6** : pour installer VMWare sur une machine réelle cette page du wiki anglophone est très utile : <https://wiki.archlinux.org/index.php/VMware>
 
@@ -663,7 +663,7 @@ Pour finir une capture d’écran du mode « Gnome Shell ».
 
 *Illustration 13: Gnome Shell 3.36*
 
-#### b) Installons KDE Plasma 5.19
+#### b) Installons KDE Plasma 5.20
 
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme trizen ou yay  ou yaypar exemple.
@@ -688,9 +688,9 @@ Si tout se passe bien, on peut utiliser pour l'activer:
 sudo systemctl enable sddm
 ```
 
-![Illustration 14: Plasma 5.19.3](pictures/014.png)
+![Illustration 14: Plasma 5.20.1](pictures/014.png)
 
-*Illustration 14: Plasma 5.19.3*
+*Illustration 14: Plasma 5.20.1*
 
 #### c) Installons Xfce
 
