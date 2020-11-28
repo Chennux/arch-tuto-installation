@@ -607,7 +607,7 @@ sudo -i
 systemctl enable syslog-ng@default → *gestion des fichiers d’enregistrement d’activité*
 systemctl enable cronie → *pour les tâches récurrentes*
 systemctl enable avahi-{daemon,dnsconfd} → *dépendances de Cups*
-systemctl enable org.cups.cupsd → *cups pour les imprimantes*
+systemctl enable cups.service → *cups pour les imprimantes*
 systemctl enable ntpd → *pour synchroniser l’heure en réseau.*
 ```
 
