@@ -9,7 +9,7 @@ Sommaire
       * [II) Commençons l'installation de l’environnement graphique !](#ii-commen%C3%A7ons-linstallation-de-lenvironnement-graphique-)
       * [III) Installons l'environnement de bureau.](#iii-installons-lenvironnement-de-bureau)<br>
             * [a) Installons GNOME 3.38](#a-installons-gnome-338)<br>
-            * [b) Installons KDE Plasma 5.19](#b-installons-kde-plasma-520)<br>
+            * [b) Installons KDE Plasma 5.21](#b-installons-kde-plasma-522)<br>
             * [c) Installons Xfce](#c-installons-xfce)<br>
             * [d) Installons Mate-Desktop](#d-installons-mate-desktop)<br>
             * [e) Installons Cinnamon](#e-installons-cinnamon)<br>
@@ -18,10 +18,10 @@ Sommaire
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 
-Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.20.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
+Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.21.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
 =======================================================================================================================
 
-Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.20.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
+Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.21.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
 
 Pour des raisons pratiques, je n’aborde nullement l’ajout de matériel comme les imprimantes, les scanners, ou encore les webcams. Je vous renvoie aux wikis anglophone <https://wiki.archlinux.org/> et francophone <http://wiki.archlinux.fr/Accueil> pour ce genre de manipulations.
 
@@ -663,7 +663,7 @@ Pour finir une capture d’écran du mode « Gnome Shell ».
 
 *Illustration 13: Gnome Shell 3.38*
 
-#### b) Installons KDE Plasma 5.20
+#### b) Installons KDE Plasma 5.21
 
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme trizen ou yay  ou yaypar exemple.
@@ -710,12 +710,12 @@ sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
 Pour installer Xfce, il faut entrer :
 
 ```
-sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator evince gucharmap ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
+sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator evince ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
 ```
 
 Quodlibet ? Pour l’audio. Pour les périphériques amovibles, gvfs est obligatoire. Claws-mail ou Mozilla Thunderbird (avec le paquet thunderbird-i18n-fr) pour le courrier. Lightdm étant pris, car plus rapide à installer. Le paquet python2-pyinotify est nécessaire pour activer le greffon de mise à jour automatique de la musicothèque sous Quodlibet. Xfce intégrant Parole, VLC n'est plus nécessaire.
 
-Evince ? Pour les fichiers en pdf. On peut aussi remplacer xarchiver par file-roller. Quant à ffmpegthumbnailer, c’est utile si vous désirez avoir un aperçu des vidéos stockées sur votre ordinateur. Enfin, gucharmap sert à disposer d'une table de caractères. Xfce intégrant désormais un économiseur d'écran, xscreensaver n'est plus nécessaire.
+Evince ? Pour les fichiers en pdf. On peut aussi remplacer xarchiver par file-roller. Quant à ffmpegthumbnailer, c’est utile si vous désirez avoir un aperçu des vidéos stockées sur votre ordinateur. Xfce intégrant désormais un économiseur d'écran, xscreensaver n'est plus nécessaire.
 
 Si vous voulez personnaliser votre lightdm :
 
@@ -753,7 +753,7 @@ L’installation ressemble à celle de Xfce, donc pour les explications des paqu
 
 
 ```
-sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme gucharmap vlc quodlibet python-pyinotify accountsservice claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
+sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme vlc quodlibet python-pyinotify accountsservice claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
 ```
 
 Si vous voulez personnaliser votre lightdm :
@@ -781,13 +781,21 @@ sudo systemctl enable lightdm
 
 #### e) Installons Cinnamon
 
+**Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme trizen ou yay par exemple.
+
+**Note 2 :**  Si vous avez besoin de gérer des périphériques utilisant MTP (tablettes sous android par exemple), il vous faut rajouter les deux paquets gvfs-mtp et mtpfs.
+Si vous voulez la totalité des greffons gvfs (merci à SuperMarioS pour la ligne de commande) :
+```
+sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
+```
+
 
 L’installation est assez courte. 
 
-Les meta-paquets gnome et gnome-extra ne sont pas indispensables, mais ils contiennent une partie non négligeable de la logithèque. Il faut juste penser à enlever nautilus, gnome-shell, gnome-session, gnome-control-center, gnome-settings-daemon, gnome-tweaks, gdm et mutter pour éviter les doublons avec les composants de Cinnamon.
+Le meta-paquet gnome-extra n'est pas indispensable, mais il contient une partie non négligeable de la logithèque.
 
 ```
-sudo pacman -S cinnamon cinnamon-translations gnome gnome-extra gnome-software-packagekit-plugin lightdm-gtk-greeter shotwell rhythmbox system-config-printer → (pour installer le support des imprimantes)
+sudo pacman -S cinnamon cinnamon-translations gnome-{terminal,screenshot,calculator,extra} eog evince file-roller gedit lightdm-gtk-greeter shotwell rhythmbox system-config-printer → (pour installer le support des imprimantes)
 ```
 
 Si vous voulez personnaliser votre lightdm :
@@ -810,9 +818,9 @@ sudo systemctl enable lightdm
 
 Pour lancer tranquillement Cinnamon dans VirtualBox, il faut dans l’écran LightDM choisir l’option "Cinnamon (Software Rendering)" qui active le rendu logiciel. Sinon, ça plantera tout le temps.
 
-![Illustration 17: Cinnamon 4.6.6](pictures/017.png)
+![Illustration 17: Cinnamon 4.8.6](pictures/017.png)
 
-*Illustration 17: Cinnamon 4.6.6*
+*Illustration 17: Cinnamon 4.8.6*
 
 #### f) Installons LXDE ou LXQt
 
@@ -828,10 +836,10 @@ J’ai regroupé les deux environnements légers qui sont tout de même assez pr
 
 Comme pour l’installation de Xfce ou encore de Mate Desktop, j’ai pris quelques logiciels types. Libre à vous de remplacer Claws-mail par Mozilla Thunderbird par exemple.
 
-Commençons par LXDE. Son installation est assez simple. Xterm est installé, car il est indispensable pour faire fonctionner l’appliquette de gestion du niveau du son. Htop
+Commençons par LXDE. Son installation est assez simple. Xterm est installé, car il est indispensable pour faire fonctionner l’appliquette de gestion du niveau du son.
 
 ```
-sudo pacman -S lxde-gtk3 xarchiver mousepad claws-mail xscreensaver vlc evince galculator flameshot gucharmap xterm system-config-printer → (pour installer le support des imprimantes)
+sudo pacman -S lxde xarchiver mousepad claws-mail xscreensaver vlc evince galculator gnome-screenshot xterm network-manager-applet system-config-printer → (pour installer le support des imprimantes)
 ```
 
 Pour lancer LXDE, il faut entrer dans un premier temps :
@@ -863,11 +871,9 @@ Si tout se passe bien, on peut utiliser :
 sudo systemctl enable sddm
 ```
 
-**Note 3** : L'apparence par défaut de ces deux environnements n'est pas très agréable, pensez à le personnaliser ! (Je l'ai fait pour les captures ci-dessous. 😉)
+![Illustration 18: LXDE dans VMWare](pictures/018.png)
 
-![Illustration 18: LXDE dans VirtualBox, avec le thème Adwaita](pictures/018.png)
-
-*Illustration 18: LXDE dans VirtualBox, avec le thème Adwaita*
+*Illustration 18: LXDE dans VMWare*
 
 ![Illustration 19: LXQt 0.15 dans VMWare, avec le thème Breeze](pictures/019.png)
 
