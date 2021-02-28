@@ -871,13 +871,13 @@ Si tout se passe bien, on peut utiliser :
 sudo systemctl enable sddm
 ```
 
-![Illustration 18: LXDE dans VMWare](pictures/018.png)
+![Illustration 18: LXDE](pictures/018.png)
 
-*Illustration 18: LXDE dans VMWare*
+*Illustration 18: LXDE*
 
-![Illustration 19: LXQt 0.15 dans VMWare, avec le thème Breeze](pictures/019.png)
+![Illustration 19: LXQt 0.16](pictures/019.png)
 
-*Illustration 19: LXQt 0.15 dans VMWare, avec le thème Breeze*
+*Illustration 19: LXQt 0.16 dans VMWare*
 
 Voila, le guide est maintenant fini. Cependant, je n’ai pas abordé l’installation d’un pare-feu. C’est quelque chose de plus technique.
 
