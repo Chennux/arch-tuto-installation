@@ -1,14 +1,14 @@
 Sommaire
 ========
 
-   * [Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.20.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-338x--plasma-510x--xfce--mate-desktop--cinnamon--lxde--lxqt)
+   * [Petit guide d’installation d’Archlinux avec Gnome 40.x / Plasma 5.20.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt](#petit-guide-dinstallation-darchlinux-avec-gnome-40x--plasma-510x--xfce--mate-desktop--cinnamon--lxde--lxqt)
       * [I) Installons notre base](#i-installons-notre-base)<br>
             * [Partitionnement et attribution des partitions en mode Bios :](#partitionnement-et-attribution-des-partitions-en-mode-bios-)<br>
             * [Partitionnement et attribution des partitions en mode UEFI :](#partitionnement-et-attribution-des-partitions-en-mode-uefi-)<br>
             * [Installation de la base de notre Archlinux :](#installation-de-la-base-de-notre-archlinux-)
       * [II) Commençons l'installation de l’environnement graphique !](#ii-commen%C3%A7ons-linstallation-de-lenvironnement-graphique-)
       * [III) Installons l'environnement de bureau.](#iii-installons-lenvironnement-de-bureau)<br>
-            * [a) Installons GNOME 3.38](#a-installons-gnome-338)<br>
+            * [a) Installons GNOME 40](#a-installons-gnome-340)<br>
             * [b) Installons KDE Plasma 5.21](#b-installons-kde-plasma-522)<br>
             * [c) Installons Xfce](#c-installons-xfce)<br>
             * [d) Installons Mate-Desktop](#d-installons-mate-desktop)<br>
@@ -18,23 +18,23 @@ Sommaire
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
 
-Petit guide d’installation d’Archlinux avec Gnome 3.38.x / Plasma 5.21.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
+Petit guide d’installation d’Archlinux avec GNOME 40.x / Plasma 5.21.x / Xfce / Mate-Desktop / Cinnamon / LXDE / LXQt
 =======================================================================================================================
 
-Dans ce petit guide, je vais détailler l’installation d’Archlinux avec Gnome 3.38 et suivant, Plasma 5.21.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
+Dans ce petit guide, je vais détailler l’installation d’Archlinux avec GNOME 40 et suivant, Plasma 5.21.x, Xfce,  Mate-Desktop, Cinnamon, LXDE et LXQt. L’installation terminée proposera un environnement suffisamment étoffé pour être utilisable.
 
 Pour des raisons pratiques, je n’aborde nullement l’ajout de matériel comme les imprimantes, les scanners, ou encore les webcams. Je vous renvoie aux wikis anglophone <https://wiki.archlinux.org/> et francophone <http://wiki.archlinux.fr/Accueil> pour ce genre de manipulations.
 
 **NOTE :** Ce tutoriel est **volontairement simplifié**. Il va vous permettre de voir comment installer une ArchLinux **en solo**. **Ensuite, s’il y a des spécificités liées à votre matériel, c’est au cas par cas qu’il faut regarder et compulser frénétiquement les wikis ci-dessus.** Si vous voulez installer une Archlinux **en parallèle** d’une installation de MS-Windows, c’est en dehors du cadre de ce document.
 
-Pour cette version du guide, je me suis basé sur la dernière ISO officielle, celle qui utilise les scripts d’installation. En février 2021, c’est la 2021.02.01.
+Pour cette version du guide, je me suis basé sur la dernière ISO officielle, celle qui utilise les scripts d’installation. En avril 2021, c’est la 2021.04.01.
 
 Merci à Ewolnux, Xarkam, Frédéric Sierra, Ludovic Riand, Vincent Manillier, Thomas Pawlowski, Igor Milhit, André Ray, Nicolas, Charles Monzat, SuperMario S, Angristan, Simon B, r33int, Mozzi, Kevin Dubrulle, Christophe Leloup, Nornort et Quentin Bihet pour leurs conseils et remarques. Et merci surtout à Frédéric Béziès pour avoir rédigé les premières versions de ce document, proposé sous licence [CC-BY-SA 4.0.](http://creativecommons.org/licenses/by-sa/4.0)
 
 I) Installons notre base
 ------------------------
 
-Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2021.02.01-x86\_64.iso, mise en ligne début février 2021.
+Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2021.04.01-x86\_64.iso, mise en ligne début avril 2021.
 
 La machine virtuelle est une machine virtuelle à laquelle j’ai rajouté un disque virtuel de 50 Go. Des points spécifiques concernant l’utilisation dans VirtualBox et VMWare sont indiqués.
 
@@ -201,7 +201,7 @@ Après avoir procédé au partitionnement et à l’attribution des partitions, 
 Avec l'outil Reflector, nous allons générer une liste des miroirs de téléchargement des paquets, en fonction de votre localisation. Je vais utiliser personnellement ces paramètres :
 
 ```
-reflector -c France -c "United Kingdom" -p https -a 12 --sort rate --save /etc/pacman.d/mirrorlist
+reflector -c FR -c GB -p https -a 12 --sort rate --save /etc/pacman.d/mirrorlist
 ```
 Autrement dit, nous allons utiliser uniquement des miroirs français et britanniques (paramètres que vous pourrez changer selon votre emplacement), utilisant le protocole https et mis à jour dans les 12 dernières heures. Nous les classons dans le même temps par rapidité et les enregistrons dans le fichier */etc/pacman.d/mirrorlist*.
 
@@ -212,7 +212,7 @@ Autrement dit, nous allons utiliser uniquement des miroirs français et britanni
 On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
-pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages} e2fsprogs sysfsutils
+pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages,pages-fr} texinfo e2fsprogs 
 pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfat-utils bash-completion (sur une seule ligne !)
 ```
 Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
@@ -303,9 +303,9 @@ mkinitcpio -p linux (ou **linux-lts** si vous voulez le noyau lts.)
 
 **Note** : si vous avez une « hurlante » contenant « /run/lvm/lvmetad.socket: connect failed » ou quelque chose d’approchant, ce n’est pas un bug. C’est une alerte sans conséquence. Cf <https://wiki.archlinux.org/index.php/GRUB#Boot_freezes>
 
-![Illustration 7 : Génération du noyau linux 5.10.16 mi-février 2020](pictures/007.png)
+![Illustration 7 : Génération du noyau linux 5.11.15 mi-avril 2020](pictures/007.png)
 
-*Illustration 7 : Génération du noyau linux 5.10.16 mi-février 2020*	
+*Illustration 7 : Génération du noyau linux 5.11.15 mi-avril 2020*	
 
 
 Au tour du chargeur de démarrage. J’utilise Grub2 qui s’occupe de tout et récupère les paquets qui vont bien. Le paquet os-prober est indispensable pour un double démarrage.
@@ -400,7 +400,7 @@ II) Commençons l'installation de l'environnement graphique !
 
 Nous attaquons donc la partie la plus intéressante, l’installation de l’environnement graphique. Il y a des étapes communes à tous les environnements. 
 
-Une fois le système démarré, on se connecte **en root**. Étant donné que j’ai installé NetworkManager (ou wicd selon les goûts) à l’étape précédente, le réseau fonctionne directement. J’ajoute ntp (synchronisation de l’heure en ligne) et cronie (pour les tâches d’administration à automatiser). 
+Une fois le système démarré, on se connecte **en root**. Étant donné que j’ai installé NetworkManager à l’étape précédente, le réseau fonctionne directement. J’ajoute ntp (synchronisation de l’heure en ligne) et cronie (pour les tâches d’administration à automatiser). 
 
 ```
 pacman -S ntp cronie
@@ -468,12 +468,12 @@ Pour Nvidia, c’est un casse-tête au niveau des pilotes propriétaires. Le plu
 | VMWare / VirtualBox | xf86-video-vmware      |                                                      |
 | Universel           | xf86-video-vesa        |                                                      |
 
-Si vous faites une installation dans VirtualBox, il faut deux paquets : les additions invités, et les modules noyaux nécessaires à leur fonctionnement. Le contrôleur graphique par défaut étant maintenant VMSVGA, il faut aussi installer le pilote vidéo de VMWare.
+Si vous faites une installation dans VirtualBox, il faut deux paquets : les additions invités, et les modules noyaux nécessaires à leur fonctionnement.
 
 Ce qui donne :
 
 ```
-pacman -S xf86-video-vmware virtualbox-guest-utils
+pacman -S virtualbox-guest-utils
 ```
 
 **Note 3 :** si vous avez décidé d’installer le noyau lts, il faut installer les paquets linux-lts-headers et virtualbox-guest-dkms. Il n’y a plus de modules précompilés pour le noyau linux-lts
@@ -484,7 +484,6 @@ La prise en charge des modules noyau se fait avec la commande systemctl suivante
 ```
 systemctl enable vboxservice
 ```
-**Note 4** : Si comme moi vous avez des soucis pour l'adapation de la résolution d'affichage sous VirtualBox, et ce, même avec le pilote VMWare installé, désinstallez *virtualbox-guest-utils* et réinstallez les additions depuis l'iso (les paquets *dkms* et *linux-(lts-)-headers* doivent être installés). Éventuellement exécutez la commande ```VBoxClient --vmsvga```.
 
 Dans le cas où vous utilisez VMWare, vous devez installer aussi les VMWare Tools :
 ```
@@ -496,9 +495,9 @@ De la même façon, vous devez activer les services adéquats :
 systemctl enable {vmtoolsd,vmware-vmblock-fuse}.service
 ```
 
-**Note 5 :** si vous installez un jour VirtualBox sur une ma-extrachine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
+**Note 4 :** si vous installez un jour VirtualBox sur une ma-extrachine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
 
-**Note 6** : pour installer VMWare sur une machine réelle cette page du wiki anglophone est très utile : <https://wiki.archlinux.org/index.php/VMware>
+**Note 5** : pour installer VMWare sur une machine réelle cette page du wiki anglophone est très utile : <https://wiki.archlinux.org/index.php/VMware>
 
 On passe ensuite à l’installation des polices. Voici la ligne de commande pour les principales. Le paquet freetype2 apportant quelques améliorations. Merci à Angristan pour la suggestion.
 Les polices noto servent, quant à elles, à supporter la majorité des caractères Unicode (émojis, caractères asiatiques, symoboles mathématiques...).
@@ -507,7 +506,7 @@ Les polices noto servent, quant à elles, à supporter la majorité des caractè
 pacman -S ttf-{bitstream-vera,liberation,dejavu} gnu-free-fonts freetype2 noto-fonts{,-extra,-cjk,-emoji}
 ```
 
-**Note 7 :** pour les polices Microsoft, le paquet ttf-ms-fonts, elles sont sur le dépôt AUR, donc il faut utiliser un enrobeur comme trizen ou yay pour les récupérer et les installer. Aussi, ajoutez ttf-{...,carlito,caladea} à la commande ci-dessus si vous utilisez des documents issus d'Office 2007 ou supérieur.
+**Note 6 :** pour les polices Microsoft, le paquet ttf-ms-fonts, elles sont sur le dépôt AUR, donc il faut utiliser un enrobeur comme trizen ou yay pour les récupérer et les installer. Aussi, ajoutez ttf-{...,carlito,caladea} à la commande ci-dessus si vous utilisez des documents issus d'Office 2007 ou supérieur.
 
 On va rajouter quelques outils, histoire de ne pas voir un environnement vide au premier démarrage.
 
@@ -572,7 +571,7 @@ Et enlever le \# sur la ligne qui suit.
 
 Comme je l’ai précisé durant le guide, on peut utiliser trizen (écrit en perl) ou yay (écrit en go) à la place du vieillissant yaourt.
 
-**Note 8 : actions à effectuer en tant qu'utilisateur classique**
+**Note 7 : actions à effectuer en tant qu'utilisateur classique**
 
 L'installation en utilisateur simple ? Pour Trizen :
 
@@ -609,6 +608,7 @@ systemctl enable cronie → *pour les tâches récurrentes*
 systemctl enable avahi-{daemon,dnsconfd} → *dépendances de Cups*
 systemctl enable cups.service → *cups pour les imprimantes*
 systemctl enable ntpd → *pour synchroniser l’heure en réseau.*
+exit
 ```
 
 III) Installons l'environnement de bureau
@@ -616,7 +616,7 @@ III) Installons l'environnement de bureau
 
 **Note :** à partir de maintenant, nous sommes connectés en tant qu’utilisateur classique.
 
-#### a) Installons GNOME 3.38
+#### a) Installons GNOME 40
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme trizen ou yay par exemple.
 
@@ -640,16 +640,16 @@ Si tout se passe bien : on l'active au démarrage.
 sudo systemctl enable gdm.service
 ```
 
-![Illustration 10: GDM 3.38 avec les sessions Wayland et Gnome sur Xorg](pictures/010.png)
+![Illustration 10: GDM 40 avec les sessions Wayland et Gnome sur Xorg](pictures/010.png)
 
-*Illustration 10: GDM 3.38 avec les sessions Wayland et Gnome sur Xorg*
+*Illustration 10: GDM 40 avec les sessions Wayland et Gnome sur Xorg*
 
 
 Il faut penser à vérifier que le clavier est correctement configuré. Ce qui se fait dans menu système unifié, paramètres.
 
-![Illustration 11: Gnome 3.38 en vue activités](pictures/011.png)
+![Illustration 11: GNOME 40 en vue activités](pictures/011.png)
 
-*Illustration 11: Gnome 3.38 en vue activités*
+*Illustration 11: GNOME 40 en vue activités*
 
 On va personnaliser le bureau Gnome en lui ajoutant la date complète et les boutons pour minimiser et maximiser les fenêtres avec Gnome Tweak Tool alias Ajustements.
 
@@ -659,9 +659,9 @@ On va personnaliser le bureau Gnome en lui ajoutant la date complète et les bou
 
 Pour finir une capture d’écran du mode « Gnome Shell ».
 
-![Illustration 13: Gnome Shell 3.38](pictures/013.png)
+![Illustration 13: Gnome Shell 40](pictures/013.png)
 
-*Illustration 13: Gnome Shell 3.38*
+*Illustration 13: Gnome Shell 40*
 
 #### b) Installons KDE Plasma 5.21
 
@@ -688,9 +688,9 @@ Si tout se passe bien, on peut utiliser pour l'activer:
 sudo systemctl enable sddm
 ```
 
-![Illustration 14: Plasma 5.21.0](pictures/014.png)
+![Illustration 14: Plasma 5.21.4](pictures/014.png)
 
-*Illustration 14: Plasma 5.21.0*
+*Illustration 14: Plasma 5.21.4*
 
 #### c) Installons Xfce
 
@@ -713,7 +713,7 @@ Pour installer Xfce, il faut entrer :
 sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator evince ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} libcanberra-{pulse,gstreamer} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
 ```
 
-Quodlibet ? Pour l’audio. Pour les périphériques amovibles, gvfs est obligatoire. Claws-mail ou Mozilla Thunderbird (avec le paquet thunderbird-i18n-fr) pour le courrier. Lightdm étant pris, car plus rapide à installer. Le paquet python2-pyinotify est nécessaire pour activer le greffon de mise à jour automatique de la musicothèque sous Quodlibet. Xfce intégrant Parole, VLC n'est plus nécessaire.
+Quodlibet ? Pour l’audio. Pour les périphériques amovibles, gvfs est obligatoire. Claws-mail ou Mozilla Thunderbird (avec le paquet thunderbird-i18n-fr) pour le courrier. Lightdm étant pris, car plus rapide à installer. Le paquet python-pyinotify est nécessaire pour activer le greffon de mise à jour automatique de la musicothèque sous Quodlibet. Xfce intégrant Parole, VLC n'est plus nécessaire.
 
 Evince ? Pour les fichiers en pdf. On peut aussi remplacer xarchiver par file-roller. Quant à ffmpegthumbnailer, c’est utile si vous désirez avoir un aperçu des vidéos stockées sur votre ordinateur. Xfce intégrant désormais un économiseur d'écran, xscreensaver n'est plus nécessaire.
 
