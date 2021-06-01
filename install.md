@@ -378,10 +378,10 @@ Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des l
 ```
 UseSyslog
 Color
-TotalDownload
 CheckSpace
 VerbosePkgLists
 ILoveCandy
+ParallelDownloads = 5
 ```
 
 On peut maintenant quitter tout, démonter proprement les partitions et redémarrer.
