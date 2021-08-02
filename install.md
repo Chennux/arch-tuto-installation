@@ -273,7 +273,6 @@ CheckSpace
 VerbosePkgLists
 ParallelDownloads = 5
 ILoveCandy
-ParallelDownloads = 5
 ```
 
 On peut maintenant quitter tout, démonter proprement les partitions et redémarrer.
