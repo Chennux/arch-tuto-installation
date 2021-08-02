@@ -8,7 +8,7 @@ Sommaire
             * [a) Installons GNOME](#a-installons-gnome)<br>
             * [b) Installons KDE Plasma](#b-installons-kde-plasma)<br>
             * [c) Installons Xfce, Mate ou Cinnamon](#c-installons-xfce-mate-ou-cinnamon)<br>
-            * [d) Installons LXQt](#f-installons-ou-lxqt)<br>
+            * [d) Installons LXQt](#d-installons-lxqt)<br>
 
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
