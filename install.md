@@ -27,11 +27,11 @@ Merci à Ewolnux, Xarkam, Frédéric Sierra, Ludovic Riand, Vincent Manillier, T
 I) Installons notre base
 ------------------------
 
-Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2021.07.01-x86\_64.iso, mise en ligne début juillet 2021.
+Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2021.10.01-x86\_64.iso, mise en ligne début octobre 2021.
 
 La machine virtuelle est une machine virtuelle à laquelle j’ai rajouté un disque virtuel de 50 Go. Des points spécifiques concernant l’utilisation dans VirtualBox et VMWare sont indiqués.
 
-**Note :** Désormais, par souci de clarté, seuleb l'installation en UEFI sera traitée dans cette nouvelle version du tutoriel. Si vous installez Arch Linux dans une machine virtuelle, pensez donc bien à l'activer dans ses paramètres. Si vous ne disposez cependant pas d'UEFI, je vous invite à lire les instructions de paritionnements et d'installation du chargeur d'amorçarge dans [l'annexe dédiée.](annexe-bios.md)
+**Note :** Désormais, par souci de clarté, seule l'installation en UEFI sera traitée dans cette nouvelle version du tutoriel. Si vous installez Arch Linux dans une machine virtuelle, pensez donc bien à l'activer dans ses paramètres. Si vous ne disposez cependant pas d'UEFI, je vous invite à lire les instructions de paritionnements et d'installation du chargeur d'amorçarge dans [l'annexe dédiée.](annexe-bios.md)
 
 La première chose à faire, c’est d’avoir le clavier français :
 
@@ -51,15 +51,15 @@ Si tout est fonctionnel, nous pouvons passer au partitionnement. Voici donc l’
 
 *Démarrage en mode UEFI*
 
-Pour le partitionnement, si vous avez peur de faire des bêtises, il est plus prudent de passer par un LiveCD comme gParted disponible à l’adresse suivante : <http://gparted.org/>
+Pour le partitionnement, si vous avez peur de faire des bêtises, il est plus prudent de passer par un LiveCD comme gParted disponible à l’adresse suivante : <http://gparted.org/download.php>
 
 Il faut se souvenir qu’il faut **obligatoirement** une table de partition GPT en cas d’installation en mode UEFI. Si vous n’êtes pas passé par gParted, il faut utiliser l’outil cgdisk.
 
 | Référence | Point de montage |  Taille                                                                                   | Système de fichiers  |
 | --------- | ---------------- |-----------------------------------------------------------------------------------------  | -------------------- |
 | /dev/sda1 | /boot/efi        | 128 Mo                                                                                    |  fat32               |
-| /dev/sda2 | /                | 20 Go minimum                                                                             |  btrfs               |
-| /dev/sda3 |                  | Taille de la mémoire vive ou plus – à partir de 8 Go de mémoire vive, 1 Go est conseillé |  swap                |
+| /dev/sda2 | /                | 20 Go minimum (sur une machine réelle, 50 Go ou plus est recommandé)                                                                             |  btrfs               |
+| /dev/sda3 |                  | Taille de la mémoire vive ou plus – au-dessus de 8 Go de mémoire vive, 1 Go est conseillé |  swap                |
 | /dev/sda4 | /home            | Le reste du disque                                                                        |  btrfs               |
   
 
@@ -112,11 +112,11 @@ On passe à l’installation de la base. La deuxième ligne rajoute certains out
 
 ```
 pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs 
-pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfat-utils bash-completion
+pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfatprogs bash-completion
 ```
 Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
 
-**Note :** exfat-utils m’a été conseillé par André Ray pour la prise en charge des cartes SD de grande capacité. Merci pour le retour !
+**Note :** exfatprogs, remplaçant exfat-utils, est utile pour la prise en charge des cartes SD de grande capacité.
 
 Vous pouvez également remplacer nano par vim si vous préférez ce dernier.
 
@@ -202,9 +202,9 @@ mkinitcpio -p linux (ou **linux-lts** si vous voulez le noyau lts.)
 
 **Note** : si vous avez une « hurlante » contenant « /run/lvm/lvmetad.socket: connect failed » ou quelque chose d’approchant, ce n’est pas un bug. C’est une alerte sans conséquence. Cf <https://wiki.archlinux.org/index.php/GRUB#Boot_freezes>
 
-![Génération du noyau linux 5.12.14 début juillet 2021](pictures/mkinitcpio.png)
+![Génération du noyau linux 5.14.14 début juillet 2021](pictures/mkinitcpio.png)
 
-*Génération du noyau linux 5.12.14 début juillet 2021*	
+*Génération du noyau linux 5.14.14 début juillet 2021*	
 
 
 Au tour du chargeur de démarrage. J’utilise Grub2 qui s’occupe de tout et récupère les paquets qui vont bien. Le paquet os-prober est indispensable pour un double démarrage.
@@ -273,7 +273,6 @@ CheckSpace
 VerbosePkgLists
 ParallelDownloads = 5
 ILoveCandy
-ParallelDownloads = 5
 ```
 
 On peut maintenant quitter tout, démonter proprement les partitions et redémarrer.
@@ -342,7 +341,7 @@ Passons à l’installation de Xorg. Le paquet xf86-input-evdev est obsolète de
 pacman -S xorg-{server,xinit,apps} xdg-user-dirs
 ```
 
-Si on utilise un ordinateur portable avec un pavé tactile, il faut rajouter le paquet xf86-input-synaptics ou **de préférence** xf86-input-libinput.
+**Note :** pour le pavé tactile de certains ordinateurs portables, il peut être nécessaire de rajouter le paquet xf86-input-synaptics.
 
 Il faut ensuite choisir le pilote pour le circuit vidéo. Voici les principaux pilotes, sachant que le paquet xf86-video-vesa englobe une énorme partie des circuits graphiques, dont ceux non listés dans le tableau un peu plus loin. En cas de doute : <https://wiki.archlinux.org/index.php/Xorg#Driver_installation>
 
