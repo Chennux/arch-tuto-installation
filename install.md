@@ -504,9 +504,9 @@ Il faut penser à vérifier que le clavier est correctement configuré. Ce qui s
 
 Pour finir une capture d’écran du mode « Gnome Shell ».
 
-![Gnome Shell 40](pictures/gnome.png)
+![Gnome Shell 40.4.0](pictures/gnome.png)
 
-*Gnome Shell 40*
+*Gnome Shell 40.4.0*
 
 #### b) Installons KDE Plasma
 
@@ -533,9 +533,9 @@ Si tout se passe bien, on peut utiliser pour l'activer:
 sudo systemctl enable sddm
 ```
 
-![Illustration 14: Plasma 5.22.3](pictures/plasma.png)
+![Illustration 14: Plasma 5.23.2](pictures/plasma.png)
 
-*Illustration 14: Plasma 5.22.3*
+*Illustration 14: Plasma 5.23.2*
 
 #### c) Installons Xfce, Mate ou Cinnamon 
 
@@ -560,7 +560,7 @@ sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-g
 Pour Mate :
 
 ```
-sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme vlc quodlibet python-pyinotify accountsservice claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman network-manager-applet system-config-printer
+sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme vlc quodlibet python-pyinotify claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman network-manager-applet system-config-printer
 ```
 
 Enfin, pour Cinnamon :
@@ -568,7 +568,6 @@ Enfin, pour Cinnamon :
 ```
 sudo pacman -S cinnamon cinnamon-translations gnome-{terminal,screenshot,calculator,extra} eog evince file-roller gedit lightdm-gtk-greeter shotwell rhythmbox system-config-printer
 ```
-
 Comme vous pouvez le remarquer, l'installation de ces 3 environnements est complétée par divers logiciels types, comme quodlibet (et sa dépendance python-pyniotify) pour la musique ou claws-mail comme client mail.
 
 Si vous voulez personnaliser votre lightdm :
@@ -595,9 +594,9 @@ sudo systemctl enable lightdm
 
 *Xfce 4.16 en action.*
 
-![Mate Desktop 1.24.1](pictures/mate.png)
+![Mate Desktop 1.26.0](pictures/mate.png)
 
-*Mate Desktop 1.24.1*
+*Mate Desktop 1.26.0*
 
 ![Cinnamon 5.0.5](pictures/cinnamon.png)
 
