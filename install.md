@@ -8,7 +8,7 @@ Sommaire
             * [a) Installons GNOME](#a-installons-gnome)<br>
             * [b) Installons KDE Plasma](#b-installons-kde-plasma)<br>
             * [c) Installons Xfce, Mate ou Cinnamon](#c-installons-xfce-mate-ou-cinnamon)<br>
-            * [d) Installons LXQt](#f-installons-ou-lxqt)<br>
+            * [d) Installons LXQt](#d-installons-lxqt)<br>
 
 Créé par [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
 
@@ -111,10 +111,10 @@ Autrement dit, nous allons utiliser uniquement des miroirs français et britanni
 On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
-pacstrap /mnt base linux linux-firmware base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs 
-pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfatprogs bash-completion
+pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs 
+pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfatprogs bash-completion ntp cronie
 ```
-Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
+Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts et linux-headers par linux-lts-headers. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
 
 **Note :** exfatprogs, remplaçant exfat-utils, est utile pour la prise en charge des cartes SD de grande capacité.
 
@@ -291,11 +291,7 @@ II) Commençons l'installation de l'environnement graphique !
 
 Nous attaquons donc la partie la plus intéressante, l’installation de l’environnement graphique. Il y a des étapes communes à tous les environnements. 
 
-Une fois le système démarré, on se connecte **en root**. Étant donné que j’ai installé NetworkManager à l’étape précédente, le réseau fonctionne directement. J’ajoute ntp (synchronisation de l’heure en ligne) et cronie (pour les tâches d’administration à automatiser). 
-
-```
-pacman -Syu ntp cronie
-```
+Une fois le système démarré, on se connecte **en root**. Étant donné que j’ai installé NetworkManager à l’étape précédente, le réseau fonctionne directement.
 
 **Note :** si on veut avoir les logs en clair en cas de problème, il faut modifier avec nano (ou vim) le fichier /etc/systemd/journald.conf en remplaçant la ligne :
 
@@ -598,9 +594,9 @@ sudo systemctl enable lightdm
 
 *Mate Desktop 1.26.0*
 
-![Cinnamon 5.0.5](pictures/cinnamon.png)
+![Cinnamon 5.0.6](pictures/cinnamon.png)
 
-*Cinnamon 5.0.5*
+*Cinnamon 5.0.6*
 
 #### d) Installons LXQt
 
@@ -620,7 +616,7 @@ Xterm est installé, car il est indispensable pour faire fonctionner l’appliqu
 
 Pour installer LXQt :
 ```
-sudo pacman -S lxqt breeze-icons sddm vlc xarchiver xscreensaver qmmp libstatgrab lm_sensors xcursor-themes claws-mail pavucontrol pulseaudio-alsa notepadqq qpdfview xterm network-manager-applet pavucontr system-config-printer → (pour installer le support des imprimantes)
+sudo pacman -S lxqt breeze-icons sddm vlc xarchiver xscreensaver qmmp libstatgrab lm_sensors xcursor-themes claws-mail pulseaudio-alsa notepadqq qpdfview xterm network-manager-applet system-config-printer → (pour installer le support des imprimantes)
 ```
 
 Pour lancer LXQt, il faut entrer dans un premier temps :
