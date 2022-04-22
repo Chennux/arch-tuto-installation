@@ -111,7 +111,7 @@ Autrement dit, nous allons utiliser uniquement des miroirs français et britanni
 On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
-pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs 
+pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs systemd-sysvcompat
 pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfatprogs bash-completion ntp cronie
 ```
 Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts et linux-headers par linux-lts-headers. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
