@@ -43,6 +43,19 @@ Pour quitter iwctl, on saisit simplement :
 exit
 ``` 
 
+**Note :** Il peut être nécessaire de "débloquer" la carte réseau que l'on souhaite utiliser. Ce peut être notamment le cas si on s'aperçoit que notre carte réseau a la propriété "Powered" à "off".
+
+Si c'est le cas, on sort de iwctl et on liste les interfaces réseau avec la commande suivante :
+
+```
+rfkill list
+```
+Si la carte réseau est "soft-blocked", il est possible de la débloquer avec la commande suivante (pour l'interface wlan, à adapter selon celle que l'on souhaite débloquer) :
+
+```
+rfkill unblock wlan
+```
+
 II) Configurer le réseau derrière un serveur proxy
 ------------------------------------------------------
 
