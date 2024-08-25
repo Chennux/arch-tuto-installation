@@ -9,5 +9,3 @@ Ayant utilisé ce tutoriel, j'ai préféré en faire un fork personnel au cas o�
 En espérant qu'il soit utile.
 
 Bonne lecture !
-
-**Note : Étant dans une période chargée personnellement depuis quelques mois et pour les quelques années à venir, je me vois dans l'obligation de freiner le rythme de développement du tutoriel. Les mises à jour resteront moins fréquentes pendant un certains temps, cependant, les corrections, commits restent les bienvenus. En cas de doute, ou d'obsolescence de certaines parties de ce tutoriel, se référer au wiki d'ArchLinux.**
