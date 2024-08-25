@@ -27,7 +27,7 @@ Merci à Ewolnux, Xarkam, Frédéric Sierra, Ludovic Riand, Vincent Manillier, T
 I) Installons notre base
 ------------------------
 
-Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2021.10.01-x86\_64.iso, mise en ligne début octobre 2021.
+Installer une Archlinux, c’est comme construire une maison. On commence par les fondations, et on rajoute les murs et le reste par la suite. L’image ISO utilisée est la archlinux-2024.08.01-x86\_64.iso, mise en ligne début août 2024.
 
 La machine virtuelle est une machine virtuelle à laquelle j’ai rajouté un disque virtuel de 50 Go. Des points spécifiques concernant l’utilisation dans VirtualBox et VMWare sont indiqués.
 
@@ -41,7 +41,7 @@ loadkeys fr
 
 On s'occupe de vérifier que la connexion Internet est fonctionnelle :
 ```
-ping google.fr
+ping -c 5 archlinux.org
 ```
 **Note :** si vous souhaitez utiliser une connexion WiFi, un serveur proxy ou SSH pour réaliser l'installation, je vous invite à lire [l'annexe didée à la configuration du réseau](annexe-reseau.md).
 
@@ -54,13 +54,13 @@ Si tout est fonctionnel, nous pouvons passer au partitionnement. Voici donc l’
 Pour le partitionnement, si vous avez peur de faire des bêtises, il est plus prudent de passer par un LiveCD comme gParted disponible à l’adresse suivante : <http://gparted.org/download.php>
 
 Il faut se souvenir qu’il faut **obligatoirement** une table de partition GPT en cas d’installation en mode UEFI. Si vous n’êtes pas passé par gParted, il faut utiliser l’outil cgdisk.
+Avant cela, pour savoir quel est le disque que vous devez paritionner, vous pouvez utiliser la commande `fdisk -l`. 
 
-| Référence | Point de montage |  Taille                                                                                   | Système de fichiers  |
-| --------- | ---------------- |-----------------------------------------------------------------------------------------  | -------------------- |
-| /dev/sda1 | /boot/efi        | 128 Mo                                                                                    |  fat32               |
-| /dev/sda2 | /                | 20 Go minimum (sur une machine réelle, 50 Go ou plus est recommandé)                                                                             |  btrfs               |
-| /dev/sda3 |                  | Taille de la mémoire vive ou plus – au-dessus de 8 Go de mémoire vive, 1 Go est conseillé |  swap                |
-| /dev/sda4 | /home            | Le reste du disque                                                                        |  btrfs               |
+| Référence | Point de montage |  Taille                                                                                    | Système de fichiers  |
+| --------- | ---------------- |------------------------------------------------------------------------------------------  | -------------------- |
+| /dev/sda1 | /boot/efi        | 128 Mo                                                                                     |  fat32               |
+| /dev/sda2 |                  | Taille de la mémoire vive ou plus – à partir de 8 Go de mémoire vive, 4 Go sont conseillés |  swap                |
+| /dev/sda3 | / et /home       | Le reste du disque (qui sera divisé en deux sous-volumes BTRFS)                            |  btrfs               |
   
 
 **Note :** pour la partition /boot/efi, il faut qu’elle soit étiquetée en EF00 à sa création. Pour le swap, c’est la référence 8200.
@@ -73,56 +73,53 @@ Le partitionnement à appliquer ? C’est le suivant :
 
 ```
 mkfs.fat -F32 /dev/sda1
-mkfs.btrfs /dev/sda2
-mkfs.btrfs /dev/sda4
+mkfs.btrfs /dev/sda3
 ```
 
 Sans oublier la partition de swap :
 
 ```
-mkswap /dev/sda3
-swapon /dev/sda3
+mkswap /dev/sda2
+swapon /dev/sda2
+```
+
+Pour créer les sous-volumes BTRFS:
+
+```
+mount /dev/sda3 /mnt
+btrfs subvolume create /mnt/@ /mnt/@home
+umount /mnt
 ```
 
 Et pour les points de montage :
 
 ```
-mount -o compress=zstd /dev/sda2 /mnt
+mount -o compress=zstd,subvol=@ /dev/sda3 /mnt
 mkdir /mnt/{boot,boot/efi,home}
+mount -o compress=zstd,subvol=@home /dev/sda3 /mnt/home
 mount /dev/sda1 /mnt/boot/efi
-mount -o compress=zstd /dev/sda4 /mnt/home
 ```
 
 **Note :** L'option `-o compress=zstd` permet de compresser les partitions BTRFS avec l'algorithme zstd, ce qui permet de gagner en espace disque mais aussi en durée de vie, particulièrement pour les SSD.
 
 On peut passer à l’installation de la base.
 
-Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. mais avant toute chose, choisissons le miroir le plus rapide.
-
-
-Avec l'outil Reflector, nous allons générer une liste des miroirs de téléchargement des paquets, en fonction de votre localisation. Je vais utiliser personnellement ces paramètres :
+Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. Le meilleur miroir de téléchargement a été sélectionné automatiquement par l'outil Reflector au lancement du système live. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
-reflector -c FR -c GB -p https -a 12 --sort rate --save /etc/pacman.d/mirrorlist
+pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs
+pacstrap /mnt zip unzip p7zip nano mc alsa-utils mtools dosfstools lsb-release exfatprogs bash-completion
 ```
-Autrement dit, nous allons utiliser uniquement des miroirs français et britanniques (paramètres que vous pourrez changer selon votre emplacement), utilisant le protocole https et mis à jour dans les 12 dernières heures. Nous les classons dans le même temps par rapidité et les enregistrons dans le fichier */etc/pacman.d/mirrorlist*.
 
+Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet `linux` par `linux-lts` et `linux-headers` par `linux-lts-headers`.
 
-On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
+**Note :** `exfatprogs`, remplaçant `exfat-utils`, est utile pour la prise en charge des cartes SD de grande capacité. De plus, le support de NTFS est aujourd'hui inclus dans le noyau, ne nécessitant ainsi plus l'installation de `ntfs-3g`. Merci à **Ada** pour la précision.
 
-```
-pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs systemd-sysvcompat
-pacstrap /mnt zip unzip p7zip nano mc alsa-utils syslog-ng mtools dosfstools lsb-release ntfs-3g exfatprogs bash-completion ntp cronie
-```
-Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet linux par linux-lts et linux-headers par linux-lts-headers. Pour ntfs-3g, c’est utile si vous êtes amené à utiliser des disques formatés en ntfs. Si ce n’est pas le cas, vous pouvez l’ignorer allègrement.
+Vous pouvez également remplacer `nano` par `vim` si vous préférez ce dernier.
 
-**Note :** exfatprogs, remplaçant exfat-utils, est utile pour la prise en charge des cartes SD de grande capacité.
+Si vous êtes sur un pc portable, l’ajout de `tlp` est conseillé pour améliorer l’autonomie de la batterie. Plus d’info sur cette page : <https://wiki.archlinux.org/index.php/TLP>
 
-Vous pouvez également remplacer nano par vim si vous préférez ce dernier.
-
-Si vous êtes sur un pc portable, l’ajout de tlp est conseillé pour améliorer l’autonomie de la batterie. Plus d’info sur cette page : <https://wiki.archlinux.org/index.php/TLP>
-
-Si vous désirez rajouter le support des microcodes pour votre processeur, il vous suffira de rajouter soit le paquet amd-ucode (pour AMD) ou intel-ucode (pour Intel). Grub détectera leur présence automatiquement.
+Si vous désirez rajouter le support des microcodes pour votre processeur, il vous suffira de rajouter soit le paquet `amd-ucode` (pour AMD) ou `intel-ucode` (pour Intel). Grub détectera leur présence automatiquement.
 
 Maintenant que les outils de base sont installés, il faut générer le fichier /etc/fstab qui liste les partitions présentes.
 
@@ -150,14 +147,14 @@ Nous allons par la suite créer des fichiers qui demanderont des valeurs précis
 | Suisse     |  fr\_CH.UTF-8 |  fr\_CH-latin1   |
   
 
-Pour avoir le bon clavier en mode texte, créez le fichier /etc/vconsole.conf. Il suffira de l’adapter si le besoin s’en fait sentir.
+Pour avoir le bon clavier en mode texte, créez le fichier `/etc/vconsole.conf`. Il suffira de l’adapter si le besoin s’en fait sentir.
 
 ```
 KEYMAP=fr-latin9
 FONT=eurlatgr
 ```
 
-Pour avoir la localisation française, le fichier /etc/locale.conf doit contenir la bonne valeur pour LANG. Pour une personne en France métropolitaine :
+Pour avoir la localisation française, le fichier `/etc/locale.conf` doit contenir la bonne valeur pour LANG. Pour une personne en France métropolitaine :
 
 ```
 LANG=fr_FR.UTF-8
@@ -166,7 +163,7 @@ LC_COLLATE=C
 
 **Note :** La deuxième ligne est nécessaire si on apprécie d’avoir le tri par la « casse » (majuscule puis minuscule) activé. Merci à Igor Milhit pour la remarque !
 
-Il faut vérifier que la ligne fr\_FR.UTF-8 UTF-8 dans le fichier /etc/locale.gen n’a pas de \# devant elle. Ainsi que la ligne en\_US.UTF-8 UTF-8. Évidemment, la valeur fr\_FR.UTF-8 doit être modifiée si besoin est. On va maintenant générer les traductions :
+Il faut vérifier que la ligne fr\_FR.UTF-8 UTF-8 dans le fichier `/etc/locale.gen` n’a pas de \# devant elle. Ainsi que la ligne en\_US.UTF-8 UTF-8. Évidemment, la valeur fr\_FR.UTF-8 doit être modifiée si besoin est. On va maintenant générer les traductions :
 
 ```
 locale-gen
@@ -194,19 +191,6 @@ hwclock --systohc --utc
 
 **Sinon, on ne touche à rien.** MS-Windows est un goujat dans ce domaine.
 
-Étape suivante ? Générer l'image du noyau.
-
-```
-mkinitcpio -p linux (ou **linux-lts** si vous voulez le noyau lts.)
-```
-
-**Note** : si vous avez une « hurlante » contenant « /run/lvm/lvmetad.socket: connect failed » ou quelque chose d’approchant, ce n’est pas un bug. C’est une alerte sans conséquence. Cf <https://wiki.archlinux.org/index.php/GRUB#Boot_freezes>
-
-![Génération du noyau linux 5.14.14 début juillet 2021](pictures/mkinitcpio.png)
-
-*Génération du noyau linux 5.14.14 début juillet 2021*	
-
-
 Au tour du chargeur de démarrage. J’utilise Grub2 qui s’occupe de tout et récupère les paquets qui vont bien. Le paquet os-prober est indispensable pour un double démarrage.
 
 
@@ -221,7 +205,7 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=arch_
 De plus, pour éviter tout problème de démarrage par la suite, spécialement dans VirtualBox, il est conseillé de rajouter les commandes suivantes :
 
 ```
-mkdir /boot/efi/EFI/boot
+mkdir -p /boot/efi/EFI/boot
 cp /boot/efi/EFI/arch_grub/grubx64.efi /boot/efi/EFI/boot/bootx64.efi
 ```
 
@@ -255,9 +239,9 @@ systemctl enable bluetooth
 
 **NOTE 2 :** netctl et networkmanager rentrent en conflit et **ne doivent pas** être utilisé en même temps. Une règle simple : un seul gestionnaire de connexion réseau à la fois !
 
-**NOTE 3 :** si vous voulez utiliser des réseaux wifi directement avec NetworkManager et son applet, le paquet gnome-keyring est indispensable. Merci à Vincent Manillier pour l’info.
+**NOTE 3 :** si vous voulez utiliser des réseaux wifi directement avec NetworkManager et son applet, le paquet `gnome-keyring` est indispensable. Merci à Vincent Manillier pour l’info.
 
-Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des librairies 32 bits), il faut décommenter (enlever les \#) des lignes suivantes dans /etc/pacman.conf :
+Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des librairies 32 bits), il faut décommenter (enlever les \#) des lignes suivantes dans `/etc/pacman.conf` :
 
 ```
 #[multilib]
@@ -267,7 +251,6 @@ Si vous voulez utiliser un outil comme Wine ou Steam (qui est nécessitent des l
 **NOTE 4** (d'après une suggestion de **Lomig**) : Toujours dans le pacman.conf, vous pouvez décommenter ou rajouter ces options dans la partie "#Misc options" pour rendre Pacman plus sympathique :
 
 ```
-UseSyslog
 Color
 CheckSpace
 VerbosePkgLists
@@ -293,18 +276,6 @@ Nous attaquons donc la partie la plus intéressante, l’installation de l’env
 
 Une fois le système démarré, on se connecte **en root**. Étant donné que j’ai installé NetworkManager à l’étape précédente, le réseau fonctionne directement.
 
-**Note :** si on veut avoir les logs en clair en cas de problème, il faut modifier avec nano (ou vim) le fichier /etc/systemd/journald.conf en remplaçant la ligne :
-
-```
-#ForwardToSyslog=no
-```
-
-par :
-
-```
-ForwardToSyslog=yes
-```
-
 Les outils en place, on lance alsamixer avec la commande du même nom, pour configurer le niveau sonore :
 
 ![alsamixer en action](pictures/alsamixer.png)
@@ -329,7 +300,7 @@ pacman -S gst-plugins-{base,good,bad,ugly} gst-libav
 
 gst-libav ? Il prend en charge tout ce qui est x264 et apparenté.
 
-Passons à l’installation de Xorg. Le paquet xf86-input-evdev est obsolète depuis début mars 2017, à cause du passage à xorg-server 1.19. Les paquets xf86-input-mouse et xf86-input-keyboard n'existent plus depuis la purge de Xorg en décembre 2019.
+Passons maintenant à l’installation de Xorg :
 
 **Note :** il n’y a pas d’espace entre le – et le { vers la fin de la commande suivante.
 
@@ -337,13 +308,13 @@ Passons à l’installation de Xorg. Le paquet xf86-input-evdev est obsolète de
 pacman -S xorg-{server,xinit,apps} xdg-user-dirs
 ```
 
-**Note :** pour le pavé tactile de certains ordinateurs portables, il peut être nécessaire de rajouter le paquet xf86-input-synaptics.
+**Note :** pour le pavé tactile de certains ordinateurs portables, il peut être nécessaire de rajouter le paquet `xf86-input-synaptics`.
 
 Il faut ensuite choisir le pilote pour le circuit vidéo. Voici les principaux pilotes, sachant que le paquet xf86-video-vesa englobe une énorme partie des circuits graphiques, dont ceux non listés dans le tableau un peu plus loin. En cas de doute : <https://wiki.archlinux.org/index.php/Xorg#Driver_installation>
 
 Pour Nvidia, c’est un casse-tête au niveau des pilotes propriétaires. Le plus simple est de se référer au wiki d'Archlinux : <https://wiki.archlinux.org/index.php/NVIDIA>. Et si vous avez la technologie Optimus : <https://wiki.archlinux.org/index.php/NVIDIA_Optimus>
 
-**Note 2** : Il est recommandé dans la plupart des cas de n'installer aucun pilote pour les cartes graphiques Intel : cf. <https://wiki.archlinux.org/index.php/Intel_graphics#Installation>
+**Note** : Il est recommandé dans la plupart des cas de n'installer aucun pilote pour les cartes graphiques Intel : cf. <https://wiki.archlinux.org/index.php/Intel_graphics#Installation>
 
  
 | Circuits graphiques | Pilotes libres         | Pilotes non libres (si existant)                     |
@@ -380,18 +351,17 @@ De la même façon, vous devez activer les services adéquats :
 systemctl enable --now {vmtoolsd,vmware-vmblock-fuse}.service
 ```
 
-**Note 3 :** si vous installez un jour VirtualBox sur une machine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
+**Note :** si vous installez un jour VirtualBox sur une machine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
 
-**Note 4** : pour installer VMWare sur une machine réelle cette page du wiki anglophone est très utile : <https://wiki.archlinux.org/index.php/VMware>
+**Note** : pour installer VMWare sur une machine réelle cette page du wiki anglophone est très utile : <https://wiki.archlinux.org/index.php/VMware>
 
 On passe ensuite à l’installation des polices. Voici la ligne de commande pour les principales. Le paquet freetype2 apportant quelques améliorations. Merci à Angristan pour la suggestion.
 Les polices noto servent, quant à elles, à supporter la majorité des caractères Unicode (émojis, caractères asiatiques, symoboles mathématiques...).
-
 ```
-pacman -S ttf-{bitstream-vera,liberation,dejavu,carlito,caladea} gnu-free-fonts freetype2 noto-fonts{,-extra,-cjk,-emoji}
+pacman -S ttf-{bitstream-vera,liberation,dejavu} gnu-free-fonts freetype2 noto-fonts{,-cjk,-emoji}
 ```
 
-**Note 5 :** pour les polices Microsoft, le paquet ttf-ms-fonts, elles sont sur le dépôt AUR, donc il faut utiliser un enrobeur comme yay pour les récupérer et les installer.
+**Note 5 :** pour les polices Microsoft, le paquet `ttf-ms-fonts`, elles sont sur le dépôt AUR, donc il faut utiliser un enrobeur comme yay pour les récupérer et les installer. De plus, pour la compatibilité avec les documents de versions de Microsoft Office plus récentes, vous pouvez ajouter `ttf-carlito` et `ttf-caladea` (disponibles dans les dépôts d'Arch Linux). 
 
 On va rajouter quelques outils, histoire de ne pas voir un environnement vide au premier démarrage.
 
@@ -401,10 +371,10 @@ On installe le service d'impression CUPS et le maximum de pilotes pour l'imprima
 pacman -S cups hplip python-pyqt5 foomatic-db{,-ppds,-gutenprint-ppds,-nonfree,-nonfree-ppds} gutenprint
 ```
 
-Nous allons maintenant installer plusieurs logiciels utiles au quotidien : Firefox pour le navigateur web (avec l'indispensable bloqueur de publicités), LibreOffice pour la suite bureautique (avec le correcteur orthographique Hunspell), GIMP pour la retouche photo et xsane pour la numérisation :
+Nous allons maintenant installer plusieurs logiciels utiles au quotidien : Firefox pour le navigateur web (avec l'indispensable bloqueur de publicités), LibreOffice pour la suite bureautique (avec le correcteur orthographique Hunspell) et GIMP pour la retouche photo :
 
 ```
-pacman -S firefox-{i18n-fr,ublock-origin} libreoffice-still-fr hunspell-fr gimp gimp-help-fr xsane
+pacman -S firefox-{i18n-fr,ublock-origin} libreoffice-fresh-fr hunspell-{en_us,fr} gimp gimp-help-fr
 ```
 De nombreux autres logiciels sont bien sûr également disponibles dans les dépôts d'ArchLinux.
 
@@ -457,11 +427,9 @@ Les valeurs étant à adapter en fonction de la locale et du clavier, bien enten
 
 ```
 sudo -i
-systemctl enable syslog-ng@default → *gestion des fichiers d’enregistrement d’activité*
-systemctl enable cronie → *pour les tâches récurrentes*
 systemctl enable avahi-{daemon,dnsconfd} → *dépendances de Cups*
 systemctl enable cups → *cups pour les imprimantes*
-systemctl enable ntpd → *pour synchroniser l’heure en réseau.*
+timedatectl set-ntp true → *pour synchroniser l’heure en réseau.*
 systemctl enable systemd-oomd → *tue automatiquement les processus trop gourmands*
 systemctl enable fstrim.timer → *optimisations pour les SSD (inutile sur les HDD)*
 exit
@@ -474,16 +442,15 @@ III) Installons l'environnement de bureau
 
 #### a) Installons GNOME
 
-**Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme yay par exemple.
+**Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme `yay` par exemple.
 
-On commence par installer les paquets de GNOME. Le paquet telepathy permet d’ajouter le maximum de support pour les comptes utilisateurs en ligne. Gnome Logiciels (alias gnome-software) est désormais installé avec le méta-paquet gnome. Le paquet gnome-software-packagekit-plugin permet d'installer des logiciels provenant des dépôts d'Arch Linux depuis Gnome Logiciels.
-unoconv sert à disposer des aperçus des documents dans GNOME Documents.
+On commence par installer les paquets de GNOME. Gnome Logiciels (alias `gnome-software`) est désormais installé avec le méta-paquet gnome. `unoconv` sert à disposer des aperçus des documents dans GNOME Documents.
 
 ```
-sudo pacman -S gnome gnome-extra gnome-software-packagekit-plugin system-config-printer telepathy shotwell rhythmbox unoconv
+sudo pacman -S gnome gnome-extra system-config-printer shotwell rhythmbox unoconv
 ```
 
-Si vous voulez ajouter le support du MTP (appareils sous Android par exemple), installez en plus le paquet mtpfs.
+Si vous voulez ajouter le support du MTP (appareils sous Android par exemple), installez en plus le paquet `mtpfs`.
 L’installation de Gnome est maintenant terminée.
 
 Ensuite, on lance GDM :
@@ -500,16 +467,18 @@ Il faut penser à vérifier que le clavier est correctement configuré. Ce qui s
 
 Pour finir une capture d’écran du mode « Gnome Shell ».
 
-![Gnome Shell 40.4.0](pictures/gnome.png)
+![Gnome Shell 46](pictures/gnome.png)
 
-*Gnome Shell 40.4.0*
+*Gnome Shell 46*
 
 #### b) Installons KDE Plasma
 
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme yay par exemple.
 
-Pour Discover, packagekit-qt5 est indispensable. La libappindicator-gtk{2,3} permet de mieux supporter les notifications des applications GTK+.
+Pour utiliser Discover avec les dépôts d'Arch Linux, `packagekit-qt5` est indispensable. La `libappindicator-gtk{2,3}` permet de mieux supporter les notifications des applications GTK+. Pensez à sélectionner le paquet `tesseract-data-fra` (pour l'OCR en langue française, utilisé par l'application `skanpage`) si un tel choix vous est proposé.
+
+**Note** : si vous ne voulez pas installer toutes les applications du groupe `kde-applications`, sachez qu'il existe également des plus petits groupes regroupant les applications KDE par catégories : `kde-accessibility`, `kde-multimedia`... 
 
 L’installation se déroule ainsi :
 
@@ -529,9 +498,11 @@ Si tout se passe bien, on peut utiliser pour l'activer:
 sudo systemctl enable sddm
 ```
 
-![Illustration 14: Plasma 5.23.2](pictures/plasma.png)
+En cas de soucis d'affichage, notamment sur VirtualBox, tentez de vous connecter sur une session X11 au lieu de Wayland (désormais choix par défaut). 
 
-*Illustration 14: Plasma 5.23.2*
+![Illustration 14: Plasma 6.1.4](pictures/plasma.png)
+
+*Illustration 14: Plasma 6.1.4*
 
 #### c) Installons Xfce, Mate ou Cinnamon 
 
@@ -539,32 +510,31 @@ Par souci de simplicité, j'ai décidé de regrouper dans un même pargraphe ces
 
 **Note :** commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme yay par exemple.
 
-**Note 2 :** si vous avez besoin de gérer des périphériques utilisant MTP (tablettes sous android par exemple), il vous faut rajouter les deux paquets gvfs-mtp et mtpfs.
+**Note 2 :** si vous avez besoin de gérer des périphériques utilisant MTP (tablettes sous android par exemple), il vous faut rajouter les deux paquets `gvfs-mtp` et `mtpfs`.
 Si vous voulez la totalité des greffons gvfs (merci à SuperMarioS pour la ligne de commande) :
 ```
-sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
+sudo pacman -S gvfs-{afc,dnssd,goa,google,gphoto2,mtp,nfs,onedrive,smb,wsdd}
 ```
 
-La première ligne ici est propre à l'environnement que vous voulez installer.
+La première ligne ici est propre à l'environnement que vous voulez installer. Comme vous pouvez le remarquer, l'installation de ces 3 environnements est complétée par divers logiciels types, comme quodlibet (et sa dépendance python-pyniotify) pour la musique ou claws-mail comme client mail.
 
 Pour installer Xfce, il faut entrer :
 
 ```
-sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator evince ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} network-manager-applet system-config-printer **→ (pour installer le support des imprimantes)**
+sudo pacman -S xfce4 xfce4-goodies gvfs quodlibet python-pyinotify lightdm-gtk-greeter xarchiver claws-mail galculator atril ffmpegthumbnailer pavucontrol pulseaudio-{alsa,bluetooth} network-manager-applet system-config-printer simple-scan **→ (pour installer le support des imprimantes et des scanners)**
 ```
 
 Pour Mate :
 
 ```
-sudo pacman -S mate mate-extra lightdm-gtk-greeter gnome-icon-theme vlc quodlibet python-pyinotify claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman network-manager-applet system-config-printer
+sudo pacman -S mate mate-extra lightdm-gtk-greeter celluloid quodlibet python-pyinotify claws-mail ffmpegthumbnailer pulseaudio-{alsa,bluetooth} blueman network-manager-applet system-config-printer simple-scan
 ```
 
 Enfin, pour Cinnamon :
 
 ```
-sudo pacman -S cinnamon cinnamon-translations gnome-{terminal,screenshot,calculator,extra} eog evince file-roller gedit lightdm-gtk-greeter shotwell rhythmbox system-config-printer
+sudo pacman -S cinnamon cinnamon-translations gnome-{screenshot,calculator,extra} xreader lightdm-gtk-greeter shotwell rhythmbox celluloid blueman system-config-printer simple-scan
 ```
-Comme vous pouvez le remarquer, l'installation de ces 3 environnements est complétée par divers logiciels types, comme quodlibet (et sa dépendance python-pyniotify) pour la musique ou claws-mail comme client mail.
 
 Si vous voulez personnaliser votre lightdm :
 
@@ -586,28 +556,28 @@ sudo systemctl enable accounts-daemon --> *uniquement si vous utilisez Mate*
 sudo systemctl enable lightdm
 ```
 
-![Xfce 4.16 en action.](pictures/xfce.png)
+![Xfce 4.18 en action.](pictures/xfce.png)
 
-*Xfce 4.16 en action.*
+*Xfce 4.18 en action.*
 
-![Mate Desktop 1.26.0](pictures/mate.png)
+![Mate Desktop 1.28.2](pictures/mate.png)
 
-*Mate Desktop 1.26.0*
+*Mate Desktop 1.28.2*
 
-![Cinnamon 5.0.6](pictures/cinnamon.png)
+![Cinnamon 6.2.9](pictures/cinnamon.png)
 
-*Cinnamon 5.0.6*
+*Cinnamon 6.2.9, légèrement personnalisé*
 
 #### d) Installons LXQt
 
 Dans cette nouvelle version du tutoriel, j'ai décidé de ne garder que l'environnement LXQt, qui supplante progressivement LXDE.
 
-**Note** : commandes à entrer en tant qu’utilisateur classique. Vous pouvez utiliser un enrobeur de pacman comme yay par exemple.
+**Note** : commandes à entrer en tant qu’utilisateur classique. Ici, pour installer le lecteur PDF `qpdfview` et l'appliquette de NetworkManager `nm-tray`, utiliser Yay (ou tout autre enrobeur de Pacman) est nécessaire.
 
-**Note 2** : Si vous avez besoin de gérer des périphériques utilisant MTP (tablettes sous android par exemple), il vous faut rajouter les deux paquets gvfs-mtp et mtpfs. Si vous voulez la totalité des greffons gvfs (merci à SuperMarioS pour la ligne de commande) :
+**Note 2** : Si vous avez besoin de gérer des périphériques utilisant MTP (tablettes sous android par exemple), il vous faut rajouter les deux paquets `gvfs-mtp` et `mtpfs`. Si vous voulez la totalité des greffons gvfs (merci à SuperMarioS pour la ligne de commande) :
 
 ```
-sudo pacman -S gvfs-{afc,goa,google,gphoto2,mtp,nfs,smb}
+yay gvfs-{afc,dnssd,goa,google,gphoto2,mtp,nfs,onedrive,smb,wsdd}
 ```
 
 Comme pour l’installation de Xfce ou encore de Mate Desktop, j’ai pris quelques logiciels types. Libre à vous de remplacer Claws-mail par Mozilla Thunderbird par exemple.
@@ -616,7 +586,7 @@ Xterm est installé, car il est indispensable pour faire fonctionner l’appliqu
 
 Pour installer LXQt :
 ```
-sudo pacman -S lxqt breeze-icons sddm vlc xarchiver xscreensaver qmmp libstatgrab lm_sensors xcursor-themes claws-mail pulseaudio-alsa notepadqq qpdfview xterm network-manager-applet system-config-printer → (pour installer le support des imprimantes)
+yay -S lxqt breeze-icons sddm vlc qmmp xscreensaver libstatgrab lm_sensors claws-mail pulseaudio-alsa featherpad qpdfview nm-tray system-config-printer skanlite **→ (pour installer le support des imprimantes et des scanners)**
 ```
 
 Pour lancer LXQt, il faut entrer dans un premier temps :
@@ -631,9 +601,9 @@ Si tout se passe bien, on peut utiliser :
 sudo systemctl enable sddm
 ```
 
-![LXQt 0.17](pictures/lxqt.png)
+![LXQt 2.0.0](pictures/lxqt.png)
 
-*LXQt 0.17*
+*LXQt 2.0.0*
 
 Voila, le guide est maintenant fini. Cependant, je n’ai pas abordé l’installation d’un pare-feu. C’est quelque chose de plus technique.
 
