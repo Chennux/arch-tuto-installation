@@ -104,7 +104,16 @@ mount /dev/sda1 /mnt/boot/efi
 
 On peut passer à l’installation de la base.
 
-Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. Le meilleur miroir de téléchargement a été sélectionné automatiquement par l'outil Reflector au lancement du système live. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
+Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. Après avoir procédé au partitionnement et à l’attribution des partitions, on peut attaquer les choses sérieuses, à savoir récupérer la base de notre installation. Mais avant toute chose, choisissons le miroir le plus rapide.
+
+
+Avec l'outil Reflector, nous allons générer une liste des miroirs de téléchargement des paquets, en fonction de votre localisation. J'utilise personnellement ces paramètres :
+```
+reflector -c FR,GB -p https -a 12 --sort rate --save /etc/pacman.d/mirrorlist
+```
+Autrement dit, nous allons utiliser uniquement des miroirs français et britanniques (paramètres que vous pouvez changer en fonction de votre emplacement), utilisant le protocole https et mis à jour dans les 12 dernières heures. Nous les classons dans le même temps par rapidité et les enregistrons dans le fichier */etc/pacman.d/mirrorlist*.
+
+On passe à l’installation de la base. La deuxième ligne rajoute certains outils bien pratiques à avoir dès le départ. On peut ensuite s’attaquer à l’installation proprement dite.
 
 ```
 pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs
