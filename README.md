@@ -10,4 +10,4 @@ En espérant qu'il soit utile.
 
 Bonne lecture !
 
-For English speakers, please note that an English translation of the tutorial has been made by Arzo, avalaible at <https://www.theneonfoxsden.com/arch_tuto/tuto.html>. I thank him warmly for this work!
+For English speakers, please note that an English translation of the tutorial has been made by Arzo, avalaible at <https://www.theneonfoxsden.com/arch_tuto/tuto.html>. I thank them warmly for this work!
