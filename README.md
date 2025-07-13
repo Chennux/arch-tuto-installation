@@ -9,3 +9,5 @@ Ayant utilisé ce tutoriel, j'ai préféré en faire un fork personnel au cas o�
 En espérant qu'il soit utile.
 
 Bonne lecture !
+
+For English speakers, please note that an English translation of the tutorial has been made by Arzo, avalaible at <https://www.theneonfoxsden.com/arch_tuto/tuto.html>. I thank him warmly for this work!
