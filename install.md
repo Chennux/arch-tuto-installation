@@ -359,7 +359,7 @@ De la même façon, vous devez activer les services adéquats :
 ```
 systemctl enable --now {vmtoolsd,vmware-vmblock-fuse}.service
 ```
-**Note :** L'installation du pilote `xf86-video-vmware` dans le cas de machines virtuelles n'est désormais plus recommandée, le paquet ayant été retiré des dépôts officiels par ailleurs.
+**Note :** L'installation du pilote `xf86-video-vmware` dans le cas de machines virtuelles n'est désormais plus recommandée, le paquet ayant été retiré des dépôts officiels par ailleurs. Merci à Frédéric Béziès pour avoir noté ce changement !
 
 **Note :** si vous installez un jour VirtualBox sur une machine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
 
