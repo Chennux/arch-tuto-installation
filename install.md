@@ -117,7 +117,7 @@ On passe à l’installation de la base. La deuxième ligne rajoute certains out
 
 ```
 pacstrap /mnt base linux linux-{headers,firmware} base-devel pacman-contrib man-{db,pages,pages-fr} texinfo btrfs-progs
-pacstrap /mnt zip unzip p7zip nano mc alsa-utils mtools dosfstools lsb-release exfatprogs bash-completion
+pacstrap /mnt zip unzip 7zip nano mc alsa-utils mtools dosfstools lsb-release exfatprogs bash-completion
 ```
 
 Si on veut utiliser un noyau linux long terme, il faut remplacer sur la première ligne pacstrap le paquet `linux` par `linux-lts` et `linux-headers` par `linux-lts-headers`.
@@ -332,7 +332,7 @@ Pour Nvidia, c’est un casse-tête au niveau des pilotes propriétaires. Le plu
 |                     | xf86-video-amdgpu      | AMDGPU-PRO (cf. le wiki d'Arch Linux)                |
 | Intel               | ⚠ xf86-video-intel     |                                                      |
 | Nvidia              | xf86-video-nouveau     | Nvidia (cf. le wiki d'Arch Linux) pour la version à installer en fonction de la carte graphique |
-| VMWare / VirtualBox | xf86-video-vmware      |                                                      |
+| VMWare / VirtualBox | ⚠ xf86-video-vmware      |                                                      |
 | Universel           | xf86-video-vesa        |                                                      |
 
 Si vous faites une installation dans VirtualBox, il faut deux paquets : les additions invités, et les modules noyaux nécessaires à leur fonctionnement.
@@ -352,13 +352,14 @@ systemctl enable --now vboxservice
 
 Dans le cas où vous utilisez VMWare, vous devez installer aussi les VMWare Tools :
 ```
-pacman -S xf86-video-vmware open-vm-tools
+pacman -S open-vm-tools
 ``` 
 
 De la même façon, vous devez activer les services adéquats :
 ```
 systemctl enable --now {vmtoolsd,vmware-vmblock-fuse}.service
 ```
+**Note :** L'installation du pilote `xf86-video-vmware` dans le cas de machines virtuelles n'est désormais plus recommandée, le paquet ayant été retiré des dépôts officiels par ailleurs.
 
 **Note :** si vous installez un jour VirtualBox sur une machine réelle je vous renvoie à cette page du wiki francophone : <https://wiki.archlinux.fr/VirtualBox>
 
